@@ -1,0 +1,13 @@
+Use IPs of the form 
+```
+3fff:fff:ffff:ffff:ffff:ffff:ffff:ffff
+```
+
+to not self dox.
+
+Examples
+```
+3fff:fff:A0E7:7032::032A
+3fff:fff:E065:4000::0B6C
+```
+

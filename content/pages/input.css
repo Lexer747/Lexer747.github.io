@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+/* Because the actual HTML is in an ignored file we need to manually specify it */
+@source "../build/";
+@source "../build/blogs";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background-color: oklch(14.5% 0 0)
+}
+
+article {
+    p {
+        margin: 0.5em;
+    }
+
+    ul {
+        margin: 0.5em;
+
+        li {
+            padding: 0.1em;
+
+            ul {
+                margin-left: 1em;
+
+                li {
+                    ul {
+                        margin-left: 1em;
+
+                        li {
+                            @apply list-['‒_'] list-inside marker:text-cyan-100
+                        }
+                    }
+
+                    @apply list-[square] list-inside marker:text-cyan-200
+                }
+            }
+
+            @apply list-disc list-inside marker:text-cyan-400
+        }
+    }
+
+    ol {
+        margin: 0.5em;
+
+        li {
+            ol {
+                margin-left: 1em;
+
+                li {
+                    ol {
+                        margin-left: 1em;
+
+                        li {
+                            margin-left: 1em;
+                            padding: 0.1em;
+                            @apply list-decimal marker:text-cyan-100
+                        }
+                    }
+
+                    margin-left: 1em;
+                    padding: 0.1em;
+                    @apply list-decimal marker:text-cyan-200
+                }
+            }
+
+            margin-left: 1em;
+            padding: 0.1em;
+            @apply list-decimal marker:text-cyan-400
+        }
+    }
+
+    .chroma {
+        margin-left: 0.5em;
+        padding: 0.5em;
+        display: block;
+        overflow-x: auto;
+        border-radius: 2px;
+    }
+
+    .Lexer747-link,
+    .footnote-ref,
+    .footnote-return {
+        @apply text-cyan-400 hover:text-cyan-100
+    }
+
+    .footnotes, h4 {
+        @apply text-gray-400
+    }
+
+    h1 {
+        display: inline-block;
+        @apply text-5xl my-8 mr-8 ml-1
+    }
+
+    h2 {
+        display: inline-block;
+        @apply text-3xl my-8 mr-8 ml-1
+    }
+
+    h3, h4, h5, h6 {
+        display: inline-block;
+        @apply text-xl my-2 mr-2 ml-1
+    }
+
+    h1>*,
+    h2>*,
+    h3>*,
+    h4>*,
+    h5>* {
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    p>code,
+    h3>code,
+    li>code {
+        color: rgb(255, 123, 114);
+    }
+
+    .anchor {
+        margin-right: 0.5em;
+        margin-bottom: 2px;
+    }
+
+    --blockquote-size: 0.2em;
+
+    blockquote {
+        background-color: --alpha(var(--color-gray-800) / 70%);
+        border-left: var(--blockquote-size) solid --alpha(var(--color-gray-400) / 70%);
+        margin: 0.25em;
+        padding: 0.15em;
+        border-radius: 2px;
+    }
+
+    .blockquote-caption {
+        background-color: --alpha(var(--color-gray-800) / 70%);
+        border-left: var(--blockquote-size) solid --alpha(var(--color-yellow-400) / 70%);
+        margin: 0.25em;
+        margin-left: 2em;
+        padding: 0.15em;
+        border-radius: 2px;
+    }
+
+    .blockquote-cyan {
+        background-color: --alpha(var(--color-cyan-950) / 70%);
+        border-left: var(--blockquote-size) solid --alpha(var(--color-cyan-400) / 70%);
+        margin: 0.25em;
+        padding: 0.15em;
+        border-radius: 2px;
+    }
+
+    .blockquote-blue {
+        background-color: --alpha(var(--color-blue-950) / 70%);
+        border-left: var(--blockquote-size) solid --alpha(var(--color-blue-400) / 70%);
+        margin: 0.25em;
+        padding: 0.15em;
+        border-radius: 2px;
+    }
+}

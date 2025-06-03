@@ -1,0 +1,21 @@
+{{t: header.fragment}}
+
+{{t: sidebar.fragment}}
+
+<div class="min-xl:ml-74 mt-4 mx-4">
+    <div class="xl:flex xl:justify-center flex-wrap break-after-auto">
+        <div class="left"></div>
+        <article class="text-white xl:max-w-240">
+
+            <br>
+            <h1>{{markdown-title:}}</h1>
+            <br>
+
+        {{markdown-content:}}
+
+        </article>
+        <div class="right"></div>
+    </div>
+</div>
+
+{{t: footer.fragment}}
