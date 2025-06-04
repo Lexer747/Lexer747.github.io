@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -19,11 +20,9 @@ const (
 	inputFiles  = root + "content/"
 	outputFiles = root + "build/"
 
-	tailwindInput  = inputFiles + "pages/"
-	tailwindOutput = outputFiles + "output.css"
+	tailwindInput  = inputFiles + "pages/input.css"
+	tailwindOutput = outputFiles + "pages/output.css"
 )
-
-// tailwindcss -i ./content/pages/input.css -o ./build/output.css --minify
 
 func main() {
 	err := runTemplating()
@@ -81,6 +80,8 @@ func runTemplating() error {
 			switch template.TemplateType {
 			case None:
 				// ???
+			case Me:
+				data = []byte(`<a href="https://lexer747.github.io/">Lexer747</a>`)
 			case FileEmbed:
 				file := template.TemplateData
 				toGet := filepath.Clean(filepath.Dir(fixture.SrcPath) + "/" + file)
@@ -101,8 +102,8 @@ func runTemplating() error {
 			fixture.File = slices.Insert(fixture.File, template.Start, data...)
 
 			for j := range fixture.Templates[i:] {
-				f := fixture.Templates[j].FileOffset
-				fixture.Templates[j].FileOffset = FileOffset{
+				f := fixture.Templates[i:][j].FileOffset
+				fixture.Templates[i:][j].FileOffset = FileOffset{
 					Start: f.Start + discrepancy,
 					End:   f.End + discrepancy,
 				}
@@ -239,6 +240,7 @@ const (
 
 	FileEmbed   TemplateType = "f"
 	CurrentYear TemplateType = "current-year"
+	Me          TemplateType = "me"
 )
 
 func exit(err error) {
@@ -246,16 +248,22 @@ func exit(err error) {
 	os.Exit(1)
 }
 
+// tailwindcss -i ./content/pages/input.css -o ./build/pages/output.css --minify
 func runTailwind() error {
 	cmd := exec.Command("tailwindcss")
-	cmd.Args = []string{
-		"-i", tailwindInput,
-		"-o", tailwindOutput,
-		"-cwd", outputFiles,
+	cmd.Args = append(cmd.Args,
+		"--input", tailwindInput,
+		"--output", tailwindOutput,
 		"--minify",
-	}
+	)
+	stdout := bytes.Buffer{}
+	stderr := bytes.Buffer{}
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+	cmd.Dir = root
+	cmd.CombinedOutput()
 	if err := cmd.Run(); err != nil {
-		return wrap(err, "failed to run tailwindcss")
+		return wrapf(err, "failed to run tailwind\nstdout: %s\nstderr: %s", stdout.String(), stderr.String())
 	}
 	return nil
 }
