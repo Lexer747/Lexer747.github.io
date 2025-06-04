@@ -19,7 +19,7 @@ const (
 	inputFiles  = root + "content/"
 	outputFiles = root + "build/"
 
-	tailwindInput  = inputFiles + "pages/input.css"
+	tailwindInput  = inputFiles + "pages/"
 	tailwindOutput = outputFiles + "output.css"
 )
 
