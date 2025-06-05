@@ -7,7 +7,7 @@
     <link href="output.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="bg-gray-950">
 
 <div class="fixed top-0 left-0 h-screen w-64 bg-cyan-950 text-white" aria-label="Sidebar">
     <div class="h-full overflow-y-auto">
@@ -68,7 +68,7 @@
     </div>
 </div>
 
-<div class="bg-gray-950 text-white p-4 sm:ml-64">
+<div aria-label="Article">
     {{summary-enumerate: ./blogs/}}
 </div>
 </body>
