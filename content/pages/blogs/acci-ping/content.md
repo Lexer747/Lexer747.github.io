@@ -6,15 +6,15 @@ well done, stay that way. For this story you needn't know more than it's a multi
 Which brings me to Virgin Media, when I moved into this private accommodation I remember a conversation with
 my new flat mates along the lines of:
 
-Blue > Hey, which internet provider should we go with for the year?
+Blue>  Hey, which internet provider should we go with for the year?
 
-Cyan > Lets go have a look at some comparison sites
+Cyan>  Lets go have a look at some comparison sites
 
-Grey > [...]
+Grey>  [...]
 
-Cyan > Wow Virgin sure looks like a great deal, great speeds (~70Mb/s down) and competitively priced
+Cyan>  Wow Virgin sure looks like a great deal, great speeds (~70Mb/s down) and competitively priced
 
-Blue > Sounds good.
+Blue>  Sounds good.
 
 Some more pre-amble
 
