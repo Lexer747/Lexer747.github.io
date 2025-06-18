@@ -1,0 +1,58 @@
+<div class="fixed top-0 left-0 h-screen w-64 bg-cyan-950 text-white" aria-label="Sidebar">
+    <div class="h-full overflow-y-auto">
+        <a class="flex flex-row items-center ps-2.5 m-5" href="https://lexer747.github.io/">
+            <svg viewBox="0 0 600 600" width="80" height="80">
+                {{f: ../images/flower.svg}}
+            </svg>
+            <span class="ps-4 self-center whitespace-nowrap text-cyan-400 font-semibold text-lg">Lexer747</span>
+        </a>
+        <hr class="m-3 w-52 rounded-sm h-px text-gray-400">
+        <ul class="space-y-2 font-medium">
+            <li class="flex flex-row items-center p-2 group">
+                <p>Hi I'm Alex, I write programs, play games and occasionally post my thoughts on the internet.</p>
+            </li>
+            <hr class="m-3 w-52 rounded-sm h-px text-gray-400">
+            <a href="#" class="mx-2 flex items-center text-center p-2 rounded-lg hover:bg-cyan-900 group">
+                <svg class="w-5 h-5 transition duration-75 text-gray-400 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="23" height="22" fill="currentColor" viewBox="0 0 245 295">
+                  {{f: ../images/pages.svg}}
+                </svg>
+                <span class="ms-3">All Posts</span>
+            </a>
+        </ul>
+
+        <div class="sticky top-[100vh] flex items-center p-2" aria-label="Sidebar Footer">
+            <ul class="space-y-2 font-medium">
+                <li>
+                    <ul class="flex flex-wrap items-center justify-center text-gray-900 dark:text-white">
+                        <li class="flex flex-row flex-nowrap items-center ml-2 group">
+                            <a class="flex text-cyan-400" href="https://github.com/Lexer747">
+                                <svg viewBox="0 0 100 100" width="24" height="24" fill="currentColor">{{f: ../images/thirdparty/github.svg}}</svg>
+                                <span class="ps-2 self-center whitespace-nowrap">Github</span>
+                            </a>
+                        </li>
+                        <li class="flex flex-row flex-nowrap items-center ml-2 group">
+                            <a class="flex text-cyan-400" href="https://www.linkedin.com/in/alex-lewis-718332137/">
+                                <svg viewBox="0 0 100 100" width="24" height="24" fill="currentColor">{{f: ../images/thirdparty/linkedin.svg}}</svg>
+                                <span class="ps-2 self-center whitespace-nowrap">LinkedIn</span>
+                            </a>
+                        </li>
+                        <li class="flex flex-row flex-nowrap items-center ml-2 group">
+                            <a class="flex text-cyan-400" href="https://steamcommunity.com/id/Lexer747/">
+                                <svg viewBox="0 0 100 100" width="24" height="24" fill="currentColor">{{f: ../images/thirdparty/steam2.svg}}</svg>
+                                <span class="ps-2 self-center whitespace-nowrap">Steam</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="mb-2" >
+                    <p>Copyright © {{current-year:}}
+                        <span class="text-cyan-400 font-semibold">{{me:}}</span> - <span class="text-gray-500">
+                            Licensed under
+                            <a class="font-semibold underline hover:decoration-3" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
+                        </span>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

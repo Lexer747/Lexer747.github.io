@@ -14,8 +14,11 @@ const (
 	inputFiles  = root + "content/"
 	outputFiles = root + "build/"
 
-	tailwindInput  = inputFiles + "pages/input.css"
-	tailwindOutput = outputFiles + "pages/output.css"
+	inputPages  = inputFiles + "pages/"
+	outputPages = outputFiles + "pages/"
+
+	tailwindInput  = inputPages + "input.css"
+	tailwindOutput = outputPages + "output.css"
 )
 
 func main() {
@@ -32,8 +35,12 @@ func main() {
 
 func glob(root, glob string) ([]string, error) {
 	results := []string{}
-	fs.WalkDir(os.DirFS(root), ".", func(path string, d fs.DirEntry, err error) error {
-		if d.IsDir() {
+	dir := os.DirFS(root)
+	if dir == nil {
+		return results, fmt.Errorf("bad root %q", root)
+	}
+	fs.WalkDir(dir, ".", func(path string, d fs.DirEntry, err error) error {
+		if d == nil || d.IsDir() {
 			return nil
 		}
 		file := filepath.Base(path)

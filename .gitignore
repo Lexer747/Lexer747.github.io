@@ -1,1 +1,4 @@
 build/
+# Binary files
+Lexer747.github.io
+__debug_bin**

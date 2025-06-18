@@ -21,6 +21,7 @@ type Fixture struct {
 type Template struct {
 	TemplateType
 	TemplateData string
+	Class        string
 	FileOffset
 }
 
@@ -38,6 +39,7 @@ const (
 	CurrentYear      TemplateType = "current-year"
 	Me               TemplateType = "me"
 	SummaryEnumerate TemplateType = "summary-enumerate"
+	Fragment         TemplateType = "t"
 )
 
 const (
@@ -103,13 +105,25 @@ func (f *Fixture) Parse() {
 		}
 
 		var data string
+		var class string
 		switch tt {
-		case FileEmbed, SummaryEnumerate:
+		case FileEmbed, Fragment:
 			data = strings.Trim(rest, " ")
+		case SummaryEnumerate:
+			parseMore := strings.Split(strings.Trim(rest, " "), " ")
+			data = parseMore[0]
+			if len(parseMore) > 0 {
+				for _, toParse := range parseMore[0:] {
+					if strings.HasPrefix(toParse, "class=") {
+						class = strings.Split(toParse, "class=")[1]
+					}
+				}
+			}
 		}
 		f.Templates[i] = Template{
 			TemplateType: tt,
 			TemplateData: data,
+			Class:        class,
 			FileOffset: FileOffset{
 				Start: open,
 				End:   close,
@@ -117,33 +131,64 @@ func (f *Fixture) Parse() {
 		}
 	}
 }
+
 func applyTemplate(template Template, fixture *Fixture, err error, errs []error, i int) []error {
-	var data []byte
+	var output []byte
 	switch template.TemplateType {
 	case None:
 		slog.Warn("None Template Type", "fixture", fixture)
 	case Me:
-		data = []byte(`<a href="https://lexer747.github.io/">Lexer747</a>`)
+		output = []byte(`<a href="https://lexer747.github.io/">Lexer747</a>`)
 	case FileEmbed:
-		file := getFile(template, fixture)
-		data, err = os.ReadFile(file)
+		file := getFile(template, fixture.SrcPath)
+		output, err = os.ReadFile(file)
 		if err != nil {
 			errs = append(errs, wrapf(err, "failed to get %q subfile %q", fixture.SrcPath, file))
 		}
 	case CurrentYear:
 		date := strconv.Itoa(time.Now().Year())
-		data = []byte(date)
+		output = []byte(date)
 	case SummaryEnumerate:
-
+		folder := template.TemplateData
+		files, err := glob(inputPages+folder, "title.content")
+		if err != nil {
+			errs = append(errs, wrapf(err, "couldn't get %s content", SummaryEnumerate))
+		}
+		b := &strings.Builder{}
+		for _, file := range files {
+			b.WriteString(`<li class=` + template.Class + `>`)
+			output, err = os.ReadFile(file)
+			if err != nil {
+				errs = append(errs, wrapf(err, "failed to get %q subfile %q", fixture.SrcPath, file))
+			}
+			url := filepath.Dir(file) + ".html"
+			b.WriteString(`<a href="` + url + `">`)
+			b.Write(output)
+			b.WriteString(`</a>`)
+			b.WriteString(`</li>`)
+		}
+		output = []byte(b.String())
+	case Fragment:
+		file := getFile(template, fixture.SrcPath)
+		toParse, err := os.ReadFile(file)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to get %q subfile %q", fixture.SrcPath, file))
+		}
+		// This parses and applies the template into the byte at parsed.File, yes this is recursive
+		parsed := &Fixture{SrcPath: file, File: toParse}
+		parsed.Parse()
+		for i, template := range parsed.Templates {
+			errs = applyTemplate(template, parsed, err, errs, i)
+		}
+		output = parsed.File
 	default:
 		slog.Warn(fmt.Sprintf("Unknown Template Type %q, leaving in output", template.TemplateType), "fixture", fixture.SrcPath)
 	}
-
 	delta := template.End - template.Start
-	discrepancy := len(data) - delta
+	discrepancy := len(output) - delta
 
 	fixture.File = slices.Delete(fixture.File, template.Start, template.End)
-	fixture.File = slices.Insert(fixture.File, template.Start, data...)
+	fixture.File = slices.Insert(fixture.File, template.Start, output...)
 
 	for j := range fixture.Templates[i:] {
 		f := fixture.Templates[i:][j].FileOffset
@@ -155,9 +200,9 @@ func applyTemplate(template Template, fixture *Fixture, err error, errs []error,
 	return errs
 }
 
-func getFile(template Template, fixture *Fixture) string {
+func getFile(template Template, srcPath string) string {
 	file := template.TemplateData
-	return filepath.Clean(filepath.Dir(fixture.SrcPath) + "/" + file)
+	return filepath.Clean(filepath.Dir(srcPath) + "/" + file)
 }
 
 func getTemplates(templates []string) ([]*Fixture, error) {
