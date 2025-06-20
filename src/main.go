@@ -6,6 +6,8 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/Lexer747/Lexer747.github.io/types"
 )
 
 const (
@@ -23,6 +25,11 @@ const (
 
 func main() {
 	err := runTemplating()
+	if err != nil {
+		exit(err)
+	}
+
+	err = runMarkdown()
 	if err != nil {
 		exit(err)
 	}
@@ -71,3 +78,6 @@ func wrapf(err error, msg string, args ...any) error {
 	addedErr := fmt.Sprintf(explain+": %s", err.Error())
 	return errors.New(addedErr)
 }
+
+// Maybe don't make global 🤷‍♂️
+var eval = types.Evaluator{Context: map[types.Contexts][]byte{}}

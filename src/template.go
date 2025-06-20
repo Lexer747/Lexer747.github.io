@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Lexer747/Lexer747.github.io/types"
 )
 
 type Fixture struct {
@@ -156,16 +158,10 @@ func applyTemplate(template Template, fixture *Fixture, err error, errs []error,
 		}
 		b := &strings.Builder{}
 		for _, file := range files {
-			b.WriteString(`<li class=` + template.Class + `>`)
-			output, err = os.ReadFile(file)
+			err = writeMarkdownSummary(b, template, file, fixture.SrcPath)
 			if err != nil {
-				errs = append(errs, wrapf(err, "failed to get %q subfile %q", fixture.SrcPath, file))
+				errs = append(errs, err)
 			}
-			url := filepath.Dir(file) + ".html"
-			b.WriteString(`<a href="` + url + `">`)
-			b.Write(output)
-			b.WriteString(`</a>`)
-			b.WriteString(`</li>`)
 		}
 		output = []byte(b.String())
 	case Fragment:
@@ -200,6 +196,20 @@ func applyTemplate(template Template, fixture *Fixture, err error, errs []error,
 	return errs
 }
 
+func writeMarkdownSummary(b *strings.Builder, template Template, file string, srcPath string) error {
+	b.WriteString(`<li class=` + template.Class + `>`)
+	bytes, err := os.ReadFile(file)
+	if err != nil {
+		return wrapf(err, "failed to get %q subfile %q", srcPath, file)
+	}
+	url := filepath.Dir(file) + ".html"
+	b.WriteString(`<a href="` + url + `">`)
+	b.Write(bytes)
+	b.WriteString(`</a>`)
+	b.WriteString(`</li>`)
+	return nil
+}
+
 func getFile(template Template, srcPath string) string {
 	file := template.TemplateData
 	return filepath.Clean(filepath.Dir(srcPath) + "/" + file)
@@ -220,6 +230,24 @@ func getTemplates(templates []string) ([]*Fixture, error) {
 }
 
 func runTemplating() error {
+	contexts, err := glob(inputFiles, "*.context")
+	if err != nil {
+		return wrap(err, "failed to get contexts files")
+	}
+	for _, context := range contexts {
+		name := strings.Split(filepath.Base(context), ".context")[0]
+		if name == string(types.MarkdownContext) {
+			file, err := os.ReadFile(context)
+			if err != nil {
+				return wrap(err, "failed to get markdown.context files")
+			}
+			eval.Context[types.MarkdownContext] = file
+		}
+	}
+	return searchAndEval_DotTemplates()
+}
+
+func searchAndEval_DotTemplates() error {
 	files, err := glob(inputFiles, "*.template")
 	if err != nil {
 		return wrap(err, "failed to get template files")
@@ -230,14 +258,11 @@ func runTemplating() error {
 	}
 	errs := make([]error, 0)
 	for _, fixture := range toReplace {
-		outputFile := strings.ReplaceAll(fixture.SrcPath, ".template", ".html")
-		outputFile = strings.ReplaceAll(outputFile, inputFiles, outputFiles)
-		outputDir := filepath.Dir(outputFile)
-		err := os.MkdirAll(outputDir, 0777)
+		outputFile, f, err := makeOutputFile(fixture.SrcPath, ".template")
 		if err != nil {
-			errs = append(errs, wrapf(err, "failed to make dir %q", outputDir))
+			errs = append(errs, err)
+			continue
 		}
-		f, err := os.OpenFile(outputFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0777)
 
 		for i, template := range fixture.Templates {
 			errs = applyTemplate(template, fixture, err, errs, i)
@@ -254,4 +279,21 @@ func runTemplating() error {
 		f.Close()
 	}
 	return nil
+}
+
+func makeOutputFile(inputPath, startingExtension string) (string, *os.File, error) {
+	outputFile := inputPath
+	if startingExtension != "" {
+		outputFile = strings.ReplaceAll(inputPath, startingExtension, ".html")
+	} else {
+		outputFile += ".html"
+	}
+	outputFile = strings.ReplaceAll(outputFile, inputFiles, outputFiles)
+	outputDir := filepath.Dir(outputFile)
+	err := os.MkdirAll(outputDir, 0777)
+	if err != nil {
+		return outputFile, nil, wrapf(err, "failed to make dir %q", outputDir)
+	}
+	f, err := os.OpenFile(outputFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0777)
+	return outputFile, f, err
 }

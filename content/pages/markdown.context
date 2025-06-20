@@ -1,0 +1,7 @@
+{{f: header.inline}}
+
+{{t: sidebar.fragment}}
+
+{{markdown:}}
+
+{{f: footer.inline}}

@@ -25,4 +25,7 @@ err := runTemplating()
 if err != nil {
 	exit(err)
 }
+func foobar(x int) any {
+	panic("unimplemented")
+}
 ```
