@@ -50,6 +50,7 @@ const (
 	Me               TemplateType = "me"
 	SummaryEnumerate TemplateType = "summary-enumerate"
 	Fragment         TemplateType = "t"
+	IndexLocation    TemplateType = "index-location"
 )
 
 const (
@@ -142,7 +143,7 @@ func (f *Fixture) Parse() {
 	}
 }
 
-func applyTemplate(template Template, fixture *Fixture, err error, errs []error, i int) []error {
+func applyTemplate(template Template, outputFile string, fixture *Fixture, err error, errs []error, i int) []error {
 	var output []byte
 	switch template.TemplateType {
 	case None:
@@ -182,9 +183,21 @@ func applyTemplate(template Template, fixture *Fixture, err error, errs []error,
 		parsed := &Fixture{SrcPath: file, File: toParse}
 		parsed.Parse()
 		for i, template := range parsed.Templates {
-			errs = applyTemplate(template, parsed, err, errs, i)
+			errs = applyTemplate(template, outputFile, parsed, err, errs, i)
 		}
 		output = parsed.File
+	case IndexLocation:
+		index := outputPages
+		newVar := filepath.Dir(outputFile)
+		location, err := filepath.Rel(newVar, index)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to get relative index location %q", fixture.SrcPath))
+		}
+		indexLocation := location + "/index.html"
+		if indexLocation == outputFile {
+			indexLocation = "#"
+		}
+		output = []byte(indexLocation)
 	default:
 		slog.Warn(fmt.Sprintf("Unknown Template Type %q, leaving in output", template.TemplateType), "fixture", fixture.SrcPath)
 	}
@@ -303,7 +316,7 @@ func (fixture *Fixture) doTemplating(outputFile string) error {
 	}
 
 	for i, template := range fixture.Templates {
-		errs = applyTemplate(template, fixture, err, errs, i)
+		errs = applyTemplate(template, outputFile, fixture, err, errs, i)
 	}
 
 	_, err = f.Write(fixture.File)
