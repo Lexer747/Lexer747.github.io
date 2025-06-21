@@ -20,6 +20,14 @@ type Fixture struct {
 	Templates []Template
 }
 
+func (f *Fixture) Clone() *Fixture {
+	return &Fixture{
+		SrcPath:   f.SrcPath,
+		File:      slices.Clone(f.File),
+		Templates: slices.Clone(f.Templates),
+	}
+}
+
 type Template struct {
 	TemplateType
 	TemplateData string
@@ -202,7 +210,12 @@ func writeMarkdownSummary(b *strings.Builder, template Template, file string, sr
 	if err != nil {
 		return wrapf(err, "failed to get %q subfile %q", srcPath, file)
 	}
-	url := filepath.Dir(file) + ".html"
+	// TODO this URL is incorrect, it should be relative to the root of the page
+	rel, err := filepath.Rel(inputPages, filepath.Dir(file))
+	if err != nil {
+		panic(err.Error())
+	}
+	url := rel + ".html"
 	b.WriteString(`<a href="` + url + `">`)
 	b.Write(bytes)
 	b.WriteString(`</a>`)
@@ -230,6 +243,7 @@ func getTemplates(templates []string) ([]*Fixture, error) {
 }
 
 func runTemplating() error {
+	// TODO this should be a pre-step in `main`
 	contexts, err := glob(inputFiles, "*.context")
 	if err != nil {
 		return wrap(err, "failed to get contexts files")
@@ -241,7 +255,12 @@ func runTemplating() error {
 			if err != nil {
 				return wrap(err, "failed to get markdown.context files")
 			}
-			eval.Context[types.MarkdownContext] = file
+			fixture := &Fixture{
+				SrcPath: context,
+				File:    file,
+			}
+			fixture.Parse()
+			eval.Context[types.MarkdownContext] = fixture
 		}
 	}
 	return searchAndEval_DotTemplates()
@@ -258,27 +277,46 @@ func searchAndEval_DotTemplates() error {
 	}
 	errs := make([]error, 0)
 	for _, fixture := range toReplace {
-		outputFile, f, err := makeOutputFile(fixture.SrcPath, ".template")
-		if err != nil {
-			errs = append(errs, err)
+		fixtureErr := fixture.doTemplating("")
+		if fixtureErr != nil {
+			errs = append(errs, fixtureErr)
 			continue
 		}
-
-		for i, template := range fixture.Templates {
-			errs = applyTemplate(template, fixture, err, errs, i)
-		}
-
-		_, err = f.Write(fixture.File)
-		if err != nil {
-			errs = append(errs, wrapf(err, "failed write template %q", outputFile))
-		}
-		_, err = f.WriteString(fmt.Sprintf("\n<!-- Generated %s -->", time.Now().String()))
-		if err != nil {
-			errs = append(errs, wrapf(err, "failed to write trailer %q", outputFile))
-		}
-		f.Close()
 	}
-	return nil
+	return errors.Join(errs...)
+}
+
+func (fixture *Fixture) doTemplating(outputFile string) error {
+	var errs []error
+	var f *os.File
+	var err error
+	if outputFile == "" {
+		outputFile, f, err = makeOutputFile(fixture.SrcPath, ".template")
+		if err != nil {
+			errs = append(errs, err)
+		}
+	} else {
+		f, err = os.OpenFile(outputFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0777)
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	for i, template := range fixture.Templates {
+		errs = applyTemplate(template, fixture, err, errs, i)
+	}
+
+	_, err = f.Write(fixture.File)
+	if err != nil {
+		errs = append(errs, wrapf(err, "failed write template %q", outputFile))
+	}
+	_, err = f.WriteString(fmt.Sprintf("\n<!-- Generated %s -->", time.Now().String()))
+	if err != nil {
+		errs = append(errs, wrapf(err, "failed to write trailer %q", outputFile))
+	}
+	err = f.Close()
+	errs = append(errs, err)
+	return errors.Join(errs...)
 }
 
 func makeOutputFile(inputPath, startingExtension string) (string, *os.File, error) {

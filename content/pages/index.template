@@ -1,4 +1,4 @@
-{{f: header.inline}}
+{{t: header.fragment}}
 
 {{t: sidebar.fragment}}
 

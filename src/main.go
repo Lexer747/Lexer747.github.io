@@ -80,4 +80,4 @@ func wrapf(err error, msg string, args ...any) error {
 }
 
 // Maybe don't make global 🤷‍♂️
-var eval = types.Evaluator{Context: map[types.Contexts][]byte{}}
+var eval = types.Evaluator{Context: map[types.Contexts]any{}}

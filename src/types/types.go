@@ -7,7 +7,7 @@ const (
 )
 
 type Evaluator struct {
-	Context map[Contexts][]byte
+	Context map[Contexts]any
 }
 
 type MetaContent struct {

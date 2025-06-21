@@ -15,6 +15,14 @@ func runMarkdown() error {
 	if err != nil {
 		return err
 	}
+	ctx, ok := eval.Context[types.MarkdownContext]
+	if !ok {
+		return errors.New("No markdown context found")
+	}
+	markdownFixture, ok := ctx.(*Fixture)
+	if !ok {
+		return errors.New("Markdown context wrong type")
+	}
 	for _, blog := range blogs {
 		out, f, err := makeOutputFile(blog.BlogURL, "")
 		fmt.Println(out)
@@ -27,7 +35,11 @@ func runMarkdown() error {
 		}
 		f.Write(data)
 		f.Close()
-		panic("TODO combine with eval markdown context")
+		fixture := markdownFixture.Clone()
+		err = fixture.doTemplating(out)
+		if err != nil {
+			return wrapf(err, "while creating markdown for blog %q", blog.SrcPath)
+		}
 	}
 	return nil
 }
