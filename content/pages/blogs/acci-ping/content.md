@@ -6,15 +6,32 @@ well done, stay that way. For this story you needn't know more than it's a multi
 Which brings me to Virgin Media, when I moved into this private accommodation I remember a conversation with
 my new flat mates along the lines of:
 
-Blue>  Hey, which internet provider should we go with for the year?
+> Lexer747:blockquote-blue
+> Hey, which internet provider should we go with for the year?
 
-Cyan>  Lets go have a look at some comparison sites
+<br>
 
-Grey>  [...]
+> Lexer747:blockquote-cyan
+> Lets go have a look at some comparison sites
 
-Cyan>  Wow Virgin sure looks like a great deal, great speeds (~70Mb/s down) and competitively priced
+<br>
 
-Blue>  Sounds good.
+> Lexer747:blockquote-blue
+> [...]
+
+<br>
+
+> Lexer747:blockquote-cyan
+> Wow Virgin sure looks like a great deal, great speeds (~70Mb/s down) and competitively priced.
+>
+> Compared to the others which charge more for worse speeds, it's a no-brainer!
+
+<br>
+
+> Lexer747:blockquote-blue
+> Sounds good.
+
+<br>
 
 Some more pre-amble
 

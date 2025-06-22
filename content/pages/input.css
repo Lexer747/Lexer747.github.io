@@ -1,9 +1,27 @@
 @import "tailwindcss";
 
+/* Because the actual HTML is in an ignored file we need to manually specify it */
+@source "../build/pages/";
+@source "../build/pages/blogs";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
     --background-color: oklch(14.5% 0 0)
+}
+
+.blockquote-cyan {
+    background-color: --alpha(var(--color-cyan-950) / 70%);
+    border-left: 3px solid --alpha(var(--color-cyan-400) / 70%);
+    margin: 0.25em;
+    padding: 0.25em;
+}
+
+.blockquote-blue {
+    background-color: --alpha(var(--color-blue-950) / 70%);
+    border-left: 3px solid --alpha(var(--color-blue-400) / 70%);
+    margin: 0.25em;
+    padding: 0.25em;
 }

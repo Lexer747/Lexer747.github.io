@@ -26,7 +26,6 @@ func runTailwind(css types.CSS) error {
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 	cmd.Dir = root
-	cmd.CombinedOutput()
 	if err := cmd.Run(); err != nil {
 		return wrapf(err, "failed to run tailwind\nstdout: %s\nstderr: %s", stdout.String(), stderr.String())
 	}

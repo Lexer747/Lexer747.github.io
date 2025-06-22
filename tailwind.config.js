@@ -1,4 +1,4 @@
-// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
 module.exports = {
     future: {},
     purge: [],
@@ -8,6 +8,9 @@ module.exports = {
     variants: {},
     plugins: [
         require('tailwindcss')
+    ],
+    content: [
+        "./build/**/*.html",
     ],
 }
 
