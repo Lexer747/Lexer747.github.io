@@ -76,31 +76,7 @@ func renderHook(mc MarkdownConfig) func(w io.Writer, node ast.Node, entering boo
 			return ast.GoToNext, true
 		}
 		if block, ok := node.(*ast.BlockQuote); ok {
-			if len(block.Children) > 0 {
-				if p, ok := block.Children[0].(*ast.Paragraph); ok {
-					if len(p.Children) > 0 {
-						if t, ok := p.Children[0].(*ast.Text); ok {
-							str := string(t.Leaf.Literal)
-							if strings.HasPrefix(str, "Lexer747:") {
-								wip := strings.Split(str, "\n")
-								colour := strings.TrimPrefix(wip[0], "Lexer747:")
-								t.Leaf.Literal = []byte(wip[1])
-								if block.Attribute == nil {
-									block.Attribute = &ast.Attribute{}
-								}
-								if block.Attribute.Attrs == nil {
-									block.Attribute.Attrs = map[string][]byte{}
-								}
-								_, found := block.Attribute.Attrs["class"]
-								if !found {
-									block.Attribute.Attrs["class"] = []byte{}
-								}
-								block.Attribute.Attrs["class"] = append(block.Attribute.Attrs["class"], []byte(colour)...)
-							}
-						}
-					}
-				}
-			}
+			formatBlockQuote(block)
 			opts := mdhtml.RendererOptions{
 				Flags: mdhtml.CommonFlags,
 			}
@@ -108,5 +84,36 @@ func renderHook(mc MarkdownConfig) func(w io.Writer, node ast.Node, entering boo
 			return newVar.RenderNode(w, block, entering), true
 		}
 		return ast.GoToNext, false
+	}
+}
+
+func formatBlockQuote(block *ast.BlockQuote) {
+	if len(block.Children) <= 0 {
+		return
+	}
+
+	if p, ok := block.Children[0].(*ast.Paragraph); ok {
+		if len(p.Children) > 0 {
+			if t, ok := p.Children[0].(*ast.Text); ok {
+				str := string(t.Leaf.Literal)
+				if !strings.HasPrefix(str, "Lexer747:") {
+					return
+				}
+				wip := strings.Split(str, "\n")
+				colour := strings.TrimPrefix(wip[0], "Lexer747:")
+				t.Leaf.Literal = []byte(wip[1])
+				if block.Attribute == nil {
+					block.Attribute = &ast.Attribute{}
+				}
+				if block.Attribute.Attrs == nil {
+					block.Attribute.Attrs = map[string][]byte{}
+				}
+				_, found := block.Attribute.Attrs["class"]
+				if !found {
+					block.Attribute.Attrs["class"] = []byte{}
+				}
+				block.Attribute.Attrs["class"] = append(block.Attribute.Attrs["class"], []byte(colour)...)
+			}
+		}
 	}
 }
