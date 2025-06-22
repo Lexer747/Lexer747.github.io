@@ -2,7 +2,11 @@ package markdown
 
 import (
 	"bytes"
+	_ "embed"
+	"fmt"
 	"io"
+	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/alecthomas/chroma"
@@ -42,7 +46,7 @@ func (mc MarkdownConfig) formatter() *html.Formatter {
 
 func renderer(mc MarkdownConfig) *mdhtml.Renderer {
 	opts := mdhtml.RendererOptions{
-		Flags:          mdhtml.CommonFlags,
+		Flags:          mdhtml.CommonFlags | mdhtml.FootnoteReturnLinks,
 		RenderNodeHook: renderHook(mc),
 	}
 	return mdhtml.NewRenderer(opts)
@@ -50,10 +54,16 @@ func renderer(mc MarkdownConfig) *mdhtml.Renderer {
 
 func renderHook(mc MarkdownConfig) func(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
 	formatter := mc.formatter()
+	opts := mdhtml.RendererOptions{
+		Flags: mdhtml.CommonFlags,
+	}
+	defaultRenderer := mdhtml.NewRenderer(opts)
+	headerId := 0
 	return func(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
-		if code, ok := node.(*ast.CodeBlock); ok {
-			lang := string(code.Info)
-			source := string(code.Literal)
+		switch typedNode := node.(type) {
+		case (*ast.CodeBlock):
+			lang := string(typedNode.Info)
+			source := string(typedNode.Literal)
 			if lang == "" {
 				lang = ""
 			}
@@ -74,17 +84,89 @@ func renderHook(mc MarkdownConfig) func(w io.Writer, node ast.Node, entering boo
 				panic(err.Error())
 			}
 			return ast.GoToNext, true
+		case (*ast.BlockQuote):
+			formatBlockQuote(typedNode)
+			return defaultRenderer.RenderNode(w, typedNode, entering), true
+		case (*ast.Link):
+			addLinkClass(typedNode)
+			return defaultRenderer.RenderNode(w, typedNode, entering), true
+		case (*ast.Heading):
+			headerId = addAnchorLink(typedNode, headerId)
+			return defaultRenderer.RenderNode(w, typedNode, entering), true
 		}
-		if block, ok := node.(*ast.BlockQuote); ok {
-			formatBlockQuote(block)
-			opts := mdhtml.RendererOptions{
-				Flags: mdhtml.CommonFlags,
-			}
-			newVar := mdhtml.NewRenderer(opts)
-			return newVar.RenderNode(w, block, entering), true
-		}
+
 		return ast.GoToNext, false
 	}
+}
+
+func addAnchorLink(heading *ast.Heading, headerId int) int {
+	headerId++
+	if len(heading.Children) <= 0 {
+		panic("no children to get markdown anchor for")
+	}
+	str := strings.Builder{}
+	queue := slices.Clone(heading.Children)
+	for {
+		if len(queue) == 0 {
+			break
+		}
+		child := queue[0]
+		if t, ok := child.(*ast.Text); ok {
+			str.WriteString(string(t.Leaf.Literal))
+		}
+		queue = slices.Delete(queue, 0, 1)
+		if len(child.GetChildren()) > 0 {
+			queue = append(child.GetChildren(), queue...)
+		}
+	}
+	precleanedTitle := str.String()
+	title := strings.Map(func(r rune) rune {
+		switch r {
+		case ' ':
+			return '-'
+		case '.':
+			return -1
+		}
+		return r
+	}, precleanedTitle)
+	heading.HeadingID = strconv.Itoa(headerId) + "-" + title
+	for i, child := range heading.Children {
+		if t, ok := child.(*ast.Text); ok {
+			heading.Children[i] = &ast.HTMLBlock{
+				Leaf: ast.Leaf{Literal: []byte("<div>" + string(t.Leaf.Literal) + "</div>")},
+			}
+		}
+	}
+	anchor := makeAnchor(heading.HeadingID, precleanedTitle)
+	heading.Children = append([]ast.Node{&ast.HTMLBlock{
+		Leaf: ast.Leaf{Literal: []byte(anchor)},
+	}}, heading.Children...)
+	heading.Attribute = &ast.Attribute{}
+	heading.Classes = [][]byte{[]byte(`flex flex-row items-center group`)}
+	return headerId
+}
+
+//go:embed anchor.svg
+var anchorSVG string
+
+func makeAnchor(headingID, title string) string {
+	const template = `<a id="%s" class="anchor" style="margin: 0 0.7em 0 0" aria-label="Permalink: %s" href="#%s">%s</a>`
+	result := fmt.Sprintf(template, headingID, title, headingID, anchorSVG)
+	return result
+}
+
+func addLinkClass(link *ast.Link) {
+	if link.Attribute == nil {
+		link.Attribute = &ast.Attribute{}
+	}
+	if link.Attribute.Attrs == nil {
+		link.Attribute.Attrs = map[string][]byte{}
+	}
+	_, found := link.Attribute.Attrs["class"]
+	if !found {
+		link.Attribute.Attrs["class"] = []byte{}
+	}
+	link.Attribute.Attrs["class"] = append(link.Attribute.Attrs["class"], []byte(`Lexer747-link`)...)
 }
 
 func formatBlockQuote(block *ast.BlockQuote) {

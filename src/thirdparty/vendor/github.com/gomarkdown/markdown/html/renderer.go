@@ -488,6 +488,9 @@ func (r *Renderer) linkEnter(w io.Writer, link *ast.Link) {
 		titleBuff.WriteByte('"')
 		attrs = append(attrs, titleBuff.String())
 	}
+	for key, value := range link.Attrs {
+		attrs = append(attrs, fmt.Sprintf("%s=%q", key, string(value)))
+	}
 	r.OutTag(w, "<a", attrs)
 }
 
