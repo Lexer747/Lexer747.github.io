@@ -4,9 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"log/slog"
 	"os"
 	"path/filepath"
+	"strings"
 
+	"github.com/Lexer747/Lexer747.github.io/fsutil"
 	"github.com/Lexer747/Lexer747.github.io/types"
 )
 
@@ -24,7 +27,12 @@ const (
 )
 
 func main() {
-	err := runTemplating()
+	err := preTemplating()
+	if err != nil {
+		exit(err)
+	}
+
+	err = runTemplating()
 	if err != nil {
 		exit(err)
 	}
@@ -81,3 +89,42 @@ func wrapf(err error, msg string, args ...any) error {
 
 // Maybe don't make global 🤷‍♂️
 var eval = types.Evaluator{Context: map[types.Contexts]any{}}
+
+func preTemplating() error {
+	contexts, err := glob(inputFiles, "*.context")
+	if err != nil {
+		return wrap(err, "failed to get contexts files")
+	}
+	for _, context := range contexts {
+		name := strings.Split(filepath.Base(context), ".context")[0]
+		if name == string(types.MarkdownContext) {
+			file, err := os.ReadFile(context)
+			if err != nil {
+				return wrap(err, "failed to get markdown.context files")
+			}
+			fixture := &Fixture{
+				SrcPath: context,
+				File:    file,
+			}
+			fixture.Parse()
+			eval.Context[types.MarkdownContext] = fixture
+		}
+	}
+	favicons, err := glob(inputFiles, "*.ico")
+	if err != nil {
+		return wrap(err, "failed to get contexts files")
+	}
+	if len(favicons) == 1 {
+		srcPath := favicons[0]
+		file := filepath.Base(srcPath)
+		destFile := outputPages + file
+		err := fsutil.Copy(srcPath, destFile)
+		if err != nil {
+			return wrap(err, "failed to get favicon")
+		}
+		eval.Context[types.FaviconContext] = destFile
+	} else {
+		slog.Warn("unexpected number of favicons, not choosing any", "favicons", favicons)
+	}
+	return nil
+}

@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Lexer747/Lexer747.github.io/fsutil"
 	"github.com/Lexer747/Lexer747.github.io/types"
 )
 
@@ -45,13 +46,15 @@ type TemplateType string
 const (
 	None TemplateType = ""
 
-	FileEmbed        TemplateType = "f"
 	CurrentYear      TemplateType = "current-year"
+	FileEmbed        TemplateType = "f"
+	Fragment         TemplateType = "t"
 	Me               TemplateType = "me"
 	SummaryEnumerate TemplateType = "summary-enumerate"
-	Fragment         TemplateType = "t"
-	IndexLocation    TemplateType = "index-location"
-	CSSLocation      TemplateType = "css-location"
+
+	CSSLocation     TemplateType = "css-location"
+	FaviconLocation TemplateType = "favicon-location"
+	IndexLocation   TemplateType = "index-location"
 )
 
 const (
@@ -188,10 +191,9 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 		}
 		output = parsed.File
 	case IndexLocation:
-		index := outputPages
-		location, err := filepath.Rel(filepath.Dir(outputFile), index)
+		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
 		if err != nil {
-			errs = append(errs, wrapf(err, "failed to get relative index location %q", fixture.SrcPath))
+			errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
 		}
 		indexLocation := location + "/index.html"
 		if indexLocation == outputFile {
@@ -199,12 +201,21 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 		}
 		output = []byte(indexLocation)
 	case CSSLocation:
-		index := outputPages
-		location, err := filepath.Rel(filepath.Dir(outputFile), index)
+		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
 		if err != nil {
-			errs = append(errs, wrapf(err, "failed to get relative index location %q", fixture.SrcPath))
+			errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
 		}
 		output = []byte(location + "/output.css")
+	case FaviconLocation:
+		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
+		}
+		faviconPath, ok := eval.Context[types.FaviconContext]
+		if !ok {
+			errs = append(errs, errors.New("No Favicon content"))
+		}
+		output = []byte(location + "/" + filepath.Base(faviconPath.(string)))
 	default:
 		slog.Warn(fmt.Sprintf("Unknown Template Type %q, leaving in output", template.TemplateType), "fixture", fixture.SrcPath)
 	}
@@ -263,30 +274,6 @@ func getTemplates(templates []string) ([]*Fixture, error) {
 }
 
 func runTemplating() error {
-	// TODO this should be a pre-step in `main`
-	contexts, err := glob(inputFiles, "*.context")
-	if err != nil {
-		return wrap(err, "failed to get contexts files")
-	}
-	for _, context := range contexts {
-		name := strings.Split(filepath.Base(context), ".context")[0]
-		if name == string(types.MarkdownContext) {
-			file, err := os.ReadFile(context)
-			if err != nil {
-				return wrap(err, "failed to get markdown.context files")
-			}
-			fixture := &Fixture{
-				SrcPath: context,
-				File:    file,
-			}
-			fixture.Parse()
-			eval.Context[types.MarkdownContext] = fixture
-		}
-	}
-	return searchAndEval_DotTemplates()
-}
-
-func searchAndEval_DotTemplates() error {
 	files, err := glob(inputFiles, "*.template")
 	if err != nil {
 		return wrap(err, "failed to get template files")
@@ -316,7 +303,7 @@ func (fixture *Fixture) doTemplating(outputFile string) error {
 			errs = append(errs, err)
 		}
 	} else {
-		f, err = os.OpenFile(outputFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0777)
+		f, err = fsutil.NewOutputFile(outputFile)
 		if err != nil {
 			errs = append(errs, err)
 		}
@@ -352,6 +339,6 @@ func makeOutputFile(inputPath, startingExtension string) (string, *os.File, erro
 	if err != nil {
 		return outputFile, nil, wrapf(err, "failed to make dir %q", outputDir)
 	}
-	f, err := os.OpenFile(outputFile, os.O_CREATE|os.O_TRUNC|os.O_RDWR, 0777)
+	f, err := fsutil.NewOutputFile(outputFile)
 	return outputFile, f, err
 }

@@ -4,6 +4,7 @@ type Contexts string
 
 const (
 	MarkdownContext Contexts = "markdown"
+	FaviconContext  Contexts = "favicon"
 )
 
 type Evaluator struct {
