@@ -4,7 +4,7 @@
 
 <div aria-label="Article" class="text-white ml-64 mt-4">
     <ul class="space-y-2 font-medium justify-center text-center">
-        {{summary-enumerate: ./blogs/ class="text-3xl"}}
+        {{summary-enumerate: ./blogs/ class="text-3xl hover:text-cyan-400"}}
     </ul>
 </div>
 

@@ -130,11 +130,10 @@ func (f *Fixture) Parse() {
 		case SummaryEnumerate:
 			parseMore := strings.Split(strings.Trim(rest, " "), " ")
 			data = parseMore[0]
-			if len(parseMore) > 0 {
-				for _, toParse := range parseMore[0:] {
-					if strings.HasPrefix(toParse, "class=") {
-						class = strings.Split(toParse, "class=")[1]
-					}
+			if len(parseMore) > 1 {
+				rest := strings.Join(parseMore[1:], " ")
+				if strings.HasPrefix(rest, "class=") {
+					class = strings.Split(rest, "class=")[1]
 				}
 			}
 		}
@@ -156,7 +155,7 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 	case None:
 		slog.Warn("None Template Type", "fixture", fixture)
 	case Me:
-		output = []byte(`<a href="https://lexer747.github.io/">Lexer747</a>`)
+		output = []byte(`<a href="https://lexer747.github.io/" class="hover:text-white">Lexer747</a>`)
 	case FileEmbed:
 		file := getFile(template, fixture.SrcPath)
 		output, err = os.ReadFile(file)
