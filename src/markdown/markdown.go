@@ -1,6 +1,7 @@
 package markdown
 
 import (
+	"bytes"
 	"io"
 
 	"github.com/alecthomas/chroma"
@@ -22,6 +23,16 @@ func AsHtml(blog types.Blog, mc MarkdownConfig) ([]byte, error) {
 
 type MarkdownConfig struct {
 	TabWidth int
+}
+
+func CSS(mc MarkdownConfig) types.CSS {
+	formatter := mc.formatter()
+	buf := bytes.Buffer{}
+	err := formatter.WriteCSS(&buf, lexer747)
+	if err != nil {
+		panic("should not fail")
+	}
+	return types.CSS{Data: buf.Bytes()}
 }
 
 func (mc MarkdownConfig) formatter() *html.Formatter {

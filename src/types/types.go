@@ -22,3 +22,7 @@ type Blog struct {
 	File    []byte
 	Content []MetaContent
 }
+
+type CSS struct {
+	Data []byte
+}

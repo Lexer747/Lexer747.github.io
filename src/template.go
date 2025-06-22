@@ -46,11 +46,12 @@ type TemplateType string
 const (
 	None TemplateType = ""
 
-	CurrentYear      TemplateType = "current-year"
-	FileEmbed        TemplateType = "f"
-	Fragment         TemplateType = "t"
-	Me               TemplateType = "me"
-	SummaryEnumerate TemplateType = "summary-enumerate"
+	CurrentYear          TemplateType = "current-year"
+	FileEmbed            TemplateType = "f"
+	Fragment             TemplateType = "t"
+	Me                   TemplateType = "me"
+	SummaryEnumerate     TemplateType = "summary-enumerate"
+	MarkdownTemplateType TemplateType = "markdown"
 
 	CSSLocation     TemplateType = "css-location"
 	FaviconLocation TemplateType = "favicon-location"
@@ -317,7 +318,7 @@ func (fixture *Fixture) doTemplating(outputFile string) error {
 	if err != nil {
 		errs = append(errs, wrapf(err, "failed write template %q", outputFile))
 	}
-	_, err = f.WriteString(fmt.Sprintf("\n<!-- Generated %s -->", time.Now().String()))
+	_, err = fmt.Fprintf(f, "\n<!-- Generated %s -->", time.Now().String())
 	if err != nil {
 		errs = append(errs, wrapf(err, "failed to write trailer %q", outputFile))
 	}
@@ -341,4 +342,10 @@ func makeOutputFile(inputPath, startingExtension string) (string, *os.File, erro
 	}
 	f, err := fsutil.NewOutputFile(outputFile)
 	return outputFile, f, err
+}
+
+func (f *Fixture) addMarkdownContent(content []byte) error {
+	// panic("unimplemented")
+	slog.Warn("unimplemented")
+	return nil
 }

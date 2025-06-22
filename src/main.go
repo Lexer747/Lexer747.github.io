@@ -37,12 +37,12 @@ func main() {
 		exit(err)
 	}
 
-	err = runMarkdown()
+	css, err := runMarkdown()
 	if err != nil {
 		exit(err)
 	}
 
-	err = runTailwind()
+	err = runTailwind(css)
 	if err != nil {
 		exit(err)
 	}

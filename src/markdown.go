@@ -10,38 +10,43 @@ import (
 	"github.com/Lexer747/Lexer747.github.io/types"
 )
 
-func runMarkdown() error {
+var (
+	markdownConfig = markdown.MarkdownConfig{TabWidth: 4}
+)
+
+func runMarkdown() (types.CSS, error) {
+	css := markdown.CSS(markdownConfig)
 	blogs, err := getBlogs()
 	if err != nil {
-		return err
+		return css, err
 	}
 	ctx, ok := eval.Context[types.MarkdownContext]
 	if !ok {
-		return errors.New("No markdown context found")
+		return css, errors.New("No markdown context found")
 	}
 	markdownFixture, ok := ctx.(*Fixture)
 	if !ok {
-		return errors.New("Markdown context wrong type")
+		return css, errors.New("Markdown context wrong type")
 	}
 	for _, blog := range blogs {
 		out, f, err := makeOutputFile(blog.BlogURL, "")
+		defer f.Close()
 		fmt.Println(out)
 		if err != nil {
-			return err
+			return css, err
 		}
-		data, err := markdown.AsHtml(blog, markdown.MarkdownConfig{TabWidth: 4})
+		data, err := markdown.AsHtml(blog, markdownConfig)
 		if err != nil {
-			return err
+			return css, err
 		}
-		f.Write(data)
-		f.Close()
 		fixture := markdownFixture.Clone()
+		fixture.addMarkdownContent(data)
 		err = fixture.doTemplating(out)
 		if err != nil {
-			return wrapf(err, "while creating markdown for blog %q", blog.SrcPath)
+			return css, wrapf(err, "while creating markdown for blog %q", blog.SrcPath)
 		}
 	}
-	return nil
+	return css, nil
 }
 
 func getBlogs() ([]types.Blog, error) {
