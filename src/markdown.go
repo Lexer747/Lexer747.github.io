@@ -2,7 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -31,7 +31,7 @@ func runMarkdown() (types.CSS, error) {
 	for _, blog := range blogs {
 		out, f, err := makeOutputFile(blog.BlogURL, "")
 		defer f.Close()
-		fmt.Println(out)
+		slog.Info("Generating blog:", "blog", out)
 		if err != nil {
 			return css, err
 		}

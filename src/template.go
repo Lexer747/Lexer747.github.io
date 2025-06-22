@@ -217,6 +217,8 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 			errs = append(errs, errors.New("No Favicon content"))
 		}
 		output = []byte(location + "/" + filepath.Base(faviconPath.(string)))
+	case MarkdownTemplateType:
+		output = []byte(template.TemplateData)
 	default:
 		slog.Warn(fmt.Sprintf("Unknown Template Type %q, leaving in output", template.TemplateType), "fixture", fixture.SrcPath)
 	}
@@ -345,7 +347,12 @@ func makeOutputFile(inputPath, startingExtension string) (string, *os.File, erro
 }
 
 func (f *Fixture) addMarkdownContent(content []byte) error {
-	// panic("unimplemented")
-	slog.Warn("unimplemented")
-	return nil
+	for i, template := range f.Templates {
+		if template.TemplateType != MarkdownTemplateType {
+			continue
+		}
+		f.Templates[i].TemplateData = string(content)
+		return nil
+	}
+	return errors.New("Markdown template not found")
 }
