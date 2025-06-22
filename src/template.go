@@ -51,6 +51,7 @@ const (
 	SummaryEnumerate TemplateType = "summary-enumerate"
 	Fragment         TemplateType = "t"
 	IndexLocation    TemplateType = "index-location"
+	CSSLocation      TemplateType = "css-location"
 )
 
 const (
@@ -188,8 +189,7 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 		output = parsed.File
 	case IndexLocation:
 		index := outputPages
-		newVar := filepath.Dir(outputFile)
-		location, err := filepath.Rel(newVar, index)
+		location, err := filepath.Rel(filepath.Dir(outputFile), index)
 		if err != nil {
 			errs = append(errs, wrapf(err, "failed to get relative index location %q", fixture.SrcPath))
 		}
@@ -198,6 +198,13 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 			indexLocation = "#"
 		}
 		output = []byte(indexLocation)
+	case CSSLocation:
+		index := outputPages
+		location, err := filepath.Rel(filepath.Dir(outputFile), index)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to get relative index location %q", fixture.SrcPath))
+		}
+		output = []byte(location + "/output.css")
 	default:
 		slog.Warn(fmt.Sprintf("Unknown Template Type %q, leaving in output", template.TemplateType), "fixture", fixture.SrcPath)
 	}
