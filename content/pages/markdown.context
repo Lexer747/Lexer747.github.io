@@ -4,7 +4,10 @@
 
 <article class="text-white ml-70 mt-4">
 
-{{markdown:}}
+    <h1 class="text-3xl">{{markdown-title:}}</h1>
+    <br>
+
+{{markdown-content:}}
 
 </article>
 

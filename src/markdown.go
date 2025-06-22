@@ -40,7 +40,7 @@ func runMarkdown() (types.CSS, error) {
 			return css, err
 		}
 		fixture := markdownFixture.Clone()
-		fixture.addMarkdownContent(data)
+		fixture.addMarkdownContent(blog.Title(), data)
 		err = fixture.doTemplating(out)
 		if err != nil {
 			return css, wrapf(err, "while creating markdown for blog %q", blog.SrcPath)
@@ -90,7 +90,7 @@ func getMetaContent(url string, file string) ([]error, []types.MetaContent) {
 	}
 	metaContent := make([]types.MetaContent, len(contents))
 	for j, content := range contents {
-		contentBytes, err := os.ReadFile(file)
+		contentBytes, err := os.ReadFile(content)
 		if err != nil {
 			errs = append(errs, wrapf(err, "failed to read content %q", file))
 			continue

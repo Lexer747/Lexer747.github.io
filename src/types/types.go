@@ -1,5 +1,10 @@
 package types
 
+import (
+	"fmt"
+	"path/filepath"
+)
+
 type Contexts string
 
 const (
@@ -25,4 +30,18 @@ type Blog struct {
 
 type CSS struct {
 	Data []byte
+}
+
+func (b Blog) Title() []byte {
+	content := b.getMetaContent("title.content")
+	return content.File
+}
+
+func (b Blog) getMetaContent(file string) MetaContent {
+	for _, content := range b.Content {
+		if filepath.Base(content.SrcPath) == file {
+			return content
+		}
+	}
+	panic(fmt.Sprintf("content not found, %q", file))
 }

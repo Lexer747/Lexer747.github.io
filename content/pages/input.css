@@ -12,6 +12,10 @@
     --background-color: oklch(14.5% 0 0)
 }
 
+p {
+    margin: 0.25em;
+}
+
 .blockquote-cyan {
     background-color: --alpha(var(--color-cyan-950) / 70%);
     border-left: 3px solid --alpha(var(--color-cyan-400) / 70%);

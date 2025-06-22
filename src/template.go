@@ -46,12 +46,14 @@ type TemplateType string
 const (
 	None TemplateType = ""
 
-	CurrentYear          TemplateType = "current-year"
-	FileEmbed            TemplateType = "f"
-	Fragment             TemplateType = "t"
-	Me                   TemplateType = "me"
-	SummaryEnumerate     TemplateType = "summary-enumerate"
-	MarkdownTemplateType TemplateType = "markdown"
+	CurrentYear      TemplateType = "current-year"
+	FileEmbed        TemplateType = "f"
+	Fragment         TemplateType = "t"
+	Me               TemplateType = "me"
+	SummaryEnumerate TemplateType = "summary-enumerate"
+
+	MarkdownTitle_TT   TemplateType = "markdown-title"
+	MarkdownContent_TT TemplateType = "markdown-content"
 
 	CSSLocation     TemplateType = "css-location"
 	FaviconLocation TemplateType = "favicon-location"
@@ -217,7 +219,7 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 			errs = append(errs, errors.New("No Favicon content"))
 		}
 		output = []byte(location + "/" + filepath.Base(faviconPath.(string)))
-	case MarkdownTemplateType:
+	case MarkdownContent_TT, MarkdownTitle_TT:
 		output = []byte(template.TemplateData)
 	default:
 		slog.Warn(fmt.Sprintf("Unknown Template Type %q, leaving in output", template.TemplateType), "fixture", fixture.SrcPath)
@@ -346,13 +348,20 @@ func makeOutputFile(inputPath, startingExtension string) (string, *os.File, erro
 	return outputFile, f, err
 }
 
-func (f *Fixture) addMarkdownContent(content []byte) error {
+func (f *Fixture) addMarkdownContent(title, content []byte) error {
+	var titleDone, contentDone bool
 	for i, template := range f.Templates {
-		if template.TemplateType != MarkdownTemplateType {
-			continue
+		switch template.TemplateType {
+		case MarkdownContent_TT:
+			f.Templates[i].TemplateData = string(content)
+			contentDone = true
+		case MarkdownTitle_TT:
+			f.Templates[i].TemplateData = string(title)
+			titleDone = true
 		}
-		f.Templates[i].TemplateData = string(content)
-		return nil
+		if titleDone && contentDone {
+			return nil
+		}
 	}
 	return errors.New("Markdown template not found")
 }
