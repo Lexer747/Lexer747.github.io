@@ -15,6 +15,7 @@ import (
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 
 	"github.com/Lexer747/Lexer747.github.io/types"
 )
@@ -22,12 +23,14 @@ import (
 func AsHtml(blog types.Blog, mc MarkdownConfig) ([]byte, error) {
 	// TODO wrap against panic and return error instead
 	renderer := renderer(mc)
-	html := markdown.ToHTML(blog.File, nil, renderer)
+	html := markdown.ToHTML(blog.File, parser.NewWithExtensions(mc.Extensions), renderer)
 	return html, nil
 }
 
 type MarkdownConfig struct {
-	TabWidth int
+	TabWidth   int
+	Flags      mdhtml.Flags
+	Extensions parser.Extensions
 }
 
 func CSS(mc MarkdownConfig) types.CSS {
@@ -46,7 +49,7 @@ func (mc MarkdownConfig) formatter() *html.Formatter {
 
 func renderer(mc MarkdownConfig) *mdhtml.Renderer {
 	opts := mdhtml.RendererOptions{
-		Flags:          mdhtml.CommonFlags | mdhtml.FootnoteReturnLinks,
+		Flags:          mc.Flags,
 		RenderNodeHook: renderHook(mc),
 	}
 	return mdhtml.NewRenderer(opts)
@@ -55,7 +58,7 @@ func renderer(mc MarkdownConfig) *mdhtml.Renderer {
 func renderHook(mc MarkdownConfig) func(w io.Writer, node ast.Node, entering bool) (ast.WalkStatus, bool) {
 	formatter := mc.formatter()
 	opts := mdhtml.RendererOptions{
-		Flags: mdhtml.CommonFlags,
+		Flags: mc.Flags,
 	}
 	defaultRenderer := mdhtml.NewRenderer(opts)
 	headerId := 0

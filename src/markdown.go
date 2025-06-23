@@ -8,10 +8,16 @@ import (
 
 	"github.com/Lexer747/Lexer747.github.io/markdown"
 	"github.com/Lexer747/Lexer747.github.io/types"
+	"github.com/gomarkdown/markdown/html"
+	"github.com/gomarkdown/markdown/parser"
 )
 
 var (
-	markdownConfig = markdown.MarkdownConfig{TabWidth: 4}
+	markdownConfig = markdown.MarkdownConfig{
+		TabWidth:   4,
+		Flags:      html.CommonFlags | html.FootnoteReturnLinks | html.FootnoteNoHRTag,
+		Extensions: parser.CommonExtensions | parser.Footnotes | parser.SuperSubscript,
+	}
 )
 
 func runMarkdown() (types.CSS, error) {

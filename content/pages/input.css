@@ -16,7 +16,9 @@ p {
     margin: 0.5em;
 }
 
-.Lexer747-link {
+.Lexer747-link,
+.footnote-ref,
+.footnote-return {
     @apply text-cyan-400 hover:text-cyan-100
 }
 

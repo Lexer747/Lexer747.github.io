@@ -44,7 +44,7 @@ the issue, until we heard on the grapevine that Virgin were well aware of the is
 nature of all the contracts and students in the area were willfully choosing to do nothing. Circumnavigating
 their own processes by verifying the network infrastructure during the summer (when all the students are not
 there), finding that the bandwidth and ping are vastly overspec'd, but once the thousands of students come
-back, it falls over completely[^1].
+back, it falls over completely [^1].
 
 This was such a deal breaker for us that we ended up just cancelling the contract paying the exit fee and
 changing provider. Because luckily we had BT as an actual competitor with different lines and infrastructure.

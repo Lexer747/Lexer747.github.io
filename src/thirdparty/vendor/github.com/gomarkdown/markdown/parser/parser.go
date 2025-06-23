@@ -33,7 +33,7 @@ const (
 	TabSizeEight                                  // Expand tabs to eight spaces instead of four
 	Footnotes                                     // Pandoc-style footnotes
 	NoEmptyLineBeforeBlock                        // No need to insert an empty line to start a (code, quote, ordered list, unordered list) block
-	HeadingIDs                                    // specify heading IDs  with {#id}
+	HeadingIDs                                    // specify heading IDs with {#id}
 	Titleblock                                    // Titleblock ala pandoc
 	AutoHeadingIDs                                // Create the heading ID from the text
 	BackslashLineBreak                            // Translate trailing backslashes into line breaks
