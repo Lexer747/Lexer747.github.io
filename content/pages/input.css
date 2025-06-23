@@ -12,42 +12,62 @@
     --background-color: oklch(14.5% 0 0)
 }
 
-p {
-    margin: 0.5em;
-}
+article {
+    p {
+        margin: 0.5em;
+    }
 
-.Lexer747-link,
-.footnote-ref,
-.footnote-return {
-    @apply text-cyan-400 hover:text-cyan-100
-}
+    ul {
+        margin: 0.5em;
 
-h1 {
-    @apply text-5xl my-8 mr-8 ml-1
-}
+        li {
+            padding: 0.1em;
+            @apply list-disc list-inside marker:text-cyan-400
+        }
+    }
 
-h2 {
-    @apply text-3xl my-8 mr-8 ml-1
-}
+    .chroma {
+        margin-left: 0.5em;
+        padding: 0.5em;
+    }
 
-h3, h4, h5, h6 {
-    @apply text-xl my-2 mr-2 ml-1
-}
+    .Lexer747-link,
+    .footnote-ref,
+    .footnote-return {
+        @apply text-cyan-400 hover:text-cyan-100
+    }
 
-h2>* {
-    margin: 0 0.25em 0 0;
-}
+    .footnotes {
+        @apply text-gray-200 text-sm
+    }
 
-.blockquote-cyan {
-    background-color: --alpha(var(--color-cyan-950) / 70%);
-    border-left: 3px solid --alpha(var(--color-cyan-400) / 70%);
-    margin: 0.25em;
-    padding: 0.25em;
-}
+    h1 {
+        @apply text-5xl my-8 mr-8 ml-1
+    }
 
-.blockquote-blue {
-    background-color: --alpha(var(--color-blue-950) / 70%);
-    border-left: 3px solid --alpha(var(--color-blue-400) / 70%);
-    margin: 0.25em;
-    padding: 0.25em;
+    h2 {
+        @apply text-3xl my-8 mr-8 ml-1
+    }
+
+    h3, h4, h5, h6 {
+        @apply text-xl my-2 mr-2 ml-1
+    }
+
+    h2>* {
+        margin: 0 0.25em 0 0;
+    }
+
+    .blockquote-cyan {
+        background-color: --alpha(var(--color-cyan-950) / 70%);
+        border-left: 3px solid --alpha(var(--color-cyan-400) / 70%);
+        margin: 0.25em;
+        padding: 0.25em;
+    }
+
+    .blockquote-blue {
+        background-color: --alpha(var(--color-blue-950) / 70%);
+        border-left: 3px solid --alpha(var(--color-blue-400) / 70%);
+        margin: 0.25em;
+        padding: 0.25em;
+    }
 }
