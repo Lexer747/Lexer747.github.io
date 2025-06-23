@@ -88,19 +88,16 @@ especially at a glance. I just taken my network course at University, ping would
 
 * Have fun with new programming languages
 * See how building TUI^(Terminal User Interface)^ applications is done
-* Foo bar
+* Use lowish level networking APIs
 
-Code examples:
+Thus: [PingPlotter](https://github.com/Lexer747/PingPlotter) was born 🎉
 
-```go
-err := runTemplating()
-if err != nil {
-	exit(err)
-}
-func foobar(x int) any {
-	panic("unimplemented")
-}
-```
+## PingPlotter
+
+A slightly flakey, awkward TUI built in *Haskell*:
+
+![A ping plotter demonstration gif. Showing an ASCII terminal plotting ping over a few seconds.](./images/pingplotter.gif)
+
 
 -----
 
