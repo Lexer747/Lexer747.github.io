@@ -20,14 +20,19 @@ const (
 	outputFiles = root + "build/"
 
 	inputPages  = inputFiles + "pages/"
-	outputPages = outputFiles + "pages/"
+	outputPages = outputFiles
 
 	tailwindInput  = inputPages + "input.css"
 	tailwindOutput = outputPages + "output.css"
 )
 
 func main() {
-	err := preTemplating()
+	err := makeOutputDir()
+	if err != nil {
+		exit(err)
+	}
+
+	err = preTemplating()
 	if err != nil {
 		exit(err)
 	}
@@ -46,6 +51,8 @@ func main() {
 	if err != nil {
 		exit(err)
 	}
+
+	// TODO delete partial generated files
 }
 
 func glob(root, glob string) ([]string, error) {
@@ -127,4 +134,8 @@ func preTemplating() error {
 		slog.Warn("unexpected number of favicons, not choosing any", "favicons", favicons)
 	}
 	return nil
+}
+
+func makeOutputDir() error {
+	return os.MkdirAll(outputPages, 0777)
 }

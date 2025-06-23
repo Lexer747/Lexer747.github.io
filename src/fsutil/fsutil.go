@@ -7,15 +7,15 @@ import (
 
 func Copy(input string, output string) error {
 	dest, err := NewOutputFile(output)
+	if err != nil {
+		return err
+	}
 	defer dest.Close()
-	if err != nil {
-		return err
-	}
 	src, err := os.Open(input)
-	defer src.Close()
 	if err != nil {
 		return err
 	}
+	defer src.Close()
 	_, err = io.Copy(dest, src)
 	return err
 }

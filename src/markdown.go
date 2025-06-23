@@ -29,7 +29,7 @@ func runMarkdown() (types.CSS, error) {
 		return css, errors.New("Markdown context wrong type")
 	}
 	for _, blog := range blogs {
-		out, f, err := makeOutputFile(blog.BlogURL, "")
+		out, f, err := makeOutputPage(blog.BlogURL, "")
 		defer f.Close()
 		slog.Info("Generating blog:", "blog", out)
 		if err != nil {

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /* Because the actual HTML is in an ignored file we need to manually specify it */
-@source "../build/pages/";
-@source "../build/pages/blogs";
+@source "../build/";
+@source "../build/blogs";
 
 @tailwind base;
 @tailwind components;

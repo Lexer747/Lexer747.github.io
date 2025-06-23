@@ -302,7 +302,7 @@ func (fixture *Fixture) doTemplating(outputFile string) error {
 	var f *os.File
 	var err error
 	if outputFile == "" {
-		outputFile, f, err = makeOutputFile(fixture.SrcPath, ".template")
+		outputFile, f, err = makeOutputPage(fixture.SrcPath, ".template")
 		if err != nil {
 			errs = append(errs, err)
 		}
@@ -330,16 +330,19 @@ func (fixture *Fixture) doTemplating(outputFile string) error {
 	return errors.Join(errs...)
 }
 
-func makeOutputFile(inputPath, startingExtension string) (string, *os.File, error) {
-	outputFile := inputPath
+func makeOutputPage(inputPath, startingExtension string) (string, *os.File, error) {
+	outputFile, err := filepath.Rel(inputPages, inputPath)
+	if err != nil {
+		return "", nil, wrap(err, "failed to get relative path")
+	}
 	if startingExtension != "" {
-		outputFile = strings.ReplaceAll(inputPath, startingExtension, ".html")
+		outputFile = strings.ReplaceAll(outputFile, startingExtension, ".html")
 	} else {
 		outputFile += ".html"
 	}
-	outputFile = strings.ReplaceAll(outputFile, inputFiles, outputFiles)
+	outputFile = outputPages + outputFile
 	outputDir := filepath.Dir(outputFile)
-	err := os.MkdirAll(outputDir, 0777)
+	err = os.MkdirAll(outputDir, 0777)
 	if err != nil {
 		return outputFile, nil, wrapf(err, "failed to make dir %q", outputDir)
 	}
