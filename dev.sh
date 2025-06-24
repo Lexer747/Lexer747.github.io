@@ -4,7 +4,7 @@
 pushd src &> /dev/null
 
 function init() {
-    go build -o Lexer747.github.io github.com/Lexer747/Lexer747.github.io
+    go build -mod vendor -o Lexer747.github.io github.com/Lexer747/Lexer747.github.io
 }
 
 function cleanup() {

@@ -33,10 +33,32 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v5
+      - name: Setup Tailwindcss
+        env:
+          TAILWINDCSS_VERSION: 4.1.8
+        run: |
+          time curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWINDCSS_VERSION }}/tailwindcss-linux-x64
+          mv tailwindcss-linux-x64 tailwindcss
+          chmod u+x tailwindcss
+          echo "$PWD/" >> "$GITHUB_PATH"
+      - name: Verify Tailwindcss
+        run: |
+          echo "$PATH"
+          tailwindcss --help
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.24.3
+      - name: Build
+        run: |
+          cd $GITHUB_WORKSPACE/src/
+          go build -mod vendor -o Lexer747.github.io github.com/Lexer747/Lexer747.github.io
+      - name: Run
+        run: |
+           $GITHUB_WORKSPACE/src/Lexer747.github.io $GITHUB_WORKSPACE
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
           path: './build/'
       - name: Deploy to GitHub Pages
         id: deployment

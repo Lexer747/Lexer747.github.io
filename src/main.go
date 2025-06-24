@@ -12,20 +12,49 @@ import (
 	"github.com/Lexer747/Lexer747.github.io/types"
 )
 
-const (
-	root = "/home/lexer747/repos/Lexer747.github.io/"
-
-	inputFiles  = root + "content/"
-	outputFiles = root + "build/"
-
-	inputPages  = inputFiles + "pages/"
-	outputPages = outputFiles
-
-	tailwindInput  = inputPages + "input.css"
-	tailwindOutput = outputPages + "output.css"
+var (
+	root           string
+	inputFiles     string
+	outputFiles    string
+	inputPages     string
+	outputPages    string
+	tailwindInput  string
+	tailwindOutput string
 )
 
+func setup(newRoot string) {
+	root = newRoot
+
+	inputFiles = root + "content/"
+	outputFiles = root + "build/"
+
+	inputPages = inputFiles + "pages/"
+	outputPages = outputFiles
+
+	tailwindInput = inputPages + "input.css"
+	tailwindOutput = outputPages + "output.css"
+}
+
 func main() {
+	if len(os.Args) < 2 {
+		setup("/home/lexer747/repos/Lexer747.github.io/")
+	} else {
+		newRoot := os.Args[1]
+		if !strings.HasSuffix(newRoot, "/") {
+			newRoot += "/"
+		}
+		setup(newRoot)
+	}
+	slog.Info("Variables",
+		"root", root,
+		"inputFiles", inputFiles,
+		"outputFiles", outputFiles,
+		"inputPages", inputPages,
+		"outputPages", outputPages,
+		"tailwindInput", tailwindInput,
+		"tailwindOutput", tailwindOutput,
+	)
+
 	err := makeOutputDir()
 	if err != nil {
 		exit(err)

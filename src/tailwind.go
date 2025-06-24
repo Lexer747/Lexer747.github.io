@@ -41,7 +41,7 @@ func addGeneratedCss(css types.CSS) (string, error) {
 	inputCSS = append(inputCSS, css.Data...)
 	inputCSS = append(inputCSS, []byte("\n/* End Lexer747 Chroma Styles: */\n")...)
 
-	const cmdCssInput = outputFiles + "input-generated.css"
+	var cmdCssInput = outputFiles + "input-generated.css"
 	f, err := fsutil.NewOutputFile(cmdCssInput)
 	if err != nil {
 		return "", wrap(err, "unable to make temp css file")
