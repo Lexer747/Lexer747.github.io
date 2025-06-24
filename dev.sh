@@ -1,12 +1,21 @@
 #!/bin/bash
 
-function build() {
-    pushd src &> /dev/null
-    go mod tidy
-    go mod vendor -o thirdparty/vendor/
-    go run github.com/Lexer747/Lexer747.github.io
+
+pushd src &> /dev/null
+
+function init() {
+    go build -o Lexer747.github.io github.com/Lexer747/Lexer747.github.io
+}
+
+function cleanup() {
+    rm Lexer747.github.io
     popd &> /dev/null
 }
 
-export TIMEFORMAT="%3lR"
-time build
+trap cleanup EXIT
+
+init
+
+while inotifywait -e modify,move,create,delete -r ./../content/; do
+    ./Lexer747.github.io
+done

@@ -26,6 +26,15 @@ article {
         }
     }
 
+    ol {
+        margin: 0.5em;
+
+        li {
+            padding: 0.1em;
+            @apply list-decimal marker:text-cyan-400
+        }
+    }
+
     .chroma {
         margin-left: 0.5em;
         padding: 0.5em;
@@ -39,8 +48,8 @@ article {
         @apply text-cyan-400 hover:text-cyan-100
     }
 
-    .footnotes {
-        @apply text-gray-200 text-sm
+    .footnotes, h4 {
+        @apply text-gray-400
     }
 
     h1 {
@@ -54,6 +63,7 @@ article {
     h3, h4, h5, h6 {
         @apply text-xl my-2 mr-2 ml-1
     }
+
 
     h2>* {
         margin: 0 0.25em 0 0;

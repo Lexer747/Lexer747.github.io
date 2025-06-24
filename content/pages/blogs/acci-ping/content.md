@@ -95,43 +95,72 @@ Thus: [PingPlotter](https://github.com/Lexer747/PingPlotter) was born 🎉
 ## PingPlotter
 
 A slightly flakey, awkward TUI built in *Haskell*:
-![A ping plotter demonstration gif. Showing an ASCII terminal plotting ping over a few seconds.](./images/pingplotter.gif)
+![A ping plotter demonstration gif. Showing an ASCII terminal plotting ping over a few seconds. Grey-scale.](./images/pingplotter.gif)
 
-```go
-func getBlogs() ([]types.Blog, error) {
-	markdownFiles, err := glob(inputPages, "*.md")
-	if err != nil {
-		return nil, wrapf(err, "failed to read markdown files at dir %q", inputPages)
-	}
-	blogs := make([]types.Blog, len(markdownFiles))
-	var errs []error
-	for i, file := range markdownFiles {
-		bytes, err := os.ReadFile(file)
-		if err != nil {
-			errs = append(errs, wrapf(err, "failed to read markdown %q", file))
-			continue
-		}
-		url := filepath.Dir(file)
-		metaErrs, metaContent := getMetaContent(url, file)
-		if len(metaErrs) > 0 {
-			errs = append(errs, metaErrs...)
-			continue
-		}
-		// testing
-		blogs[i] = types.Blog{
-			SrcPath: file,
-			BlogURL: url,
-			File:    bytes,
-			Content: metaContent,
-		}
-	}
-	if len(errs) > 0 {
-		return nil, errors.Join(errs...)
-	}
-	return blogs, nil
-}
+Which, with some hindsight, wasn't the best choice in terms of an ergonomics to build out of features[^2]. The
+complexity of the project rose fairly rapidly as I needed to refactor parts of the app to enable: file
+saving/loading, decoupling framerate from ping-rate, and adding a log-scale toggle.
+
+In the end I lost motivation, we switched provider by this time which eliminated my need to endlessly track
+the ping as our new provider ([BT](https://en.wikipedia.org/wiki/BT_Group)) was providing much better latency.
+
+This lead to a rather long hiatus between improving the tool I'd created (7 years in fact ...). Due to the
+nature of Haskell by the time I got back around to having a stab at version 2 of PingPlotter. I'd completely
+lost the small details of how my program even worked and tweaking it seemed like an impossibly brittle task.
+When I read my own old type signatures, an absolute crippling level of anguish kicks in:
+
+```hs
+toInternalPure :: (RealFrac x, Enum x, Ord x, IOShow a, IOShow b) =>
+    (a -> x) -> (b -> x) -> Integer -> Integer -> Graph a b -> Window Integer -> InternalGraph a b
 ```
 
+And honestly I was in the mood for a re-write anyway.
+
+> Lexer747:blockquote-cyan
+> "lets see if 7 years doing software engineering would make a difference"
+
+I thought to myself. I did however want to stay true to some principals that had been acquired from the first
+version, which is:
+
+* Must run in the terminal, GUI's are banned.
+* Minimal dependencies, stick to the standard library (ideally even networking is written against kernel
+  level APIs).
+
+But at the end of it all a new tool was built - [AcciPing](https://github.com/Lexer747/acci-ping).
+
+## AcciPing
+![AcciPing demonstration gif. Showing an ASCII terminal plotting ping over a few seconds. Notably with more statistics and colour](./images/acci-ping.gif)
+
+A more robust, performant and shinier TUI built in *Go*. It supports many new features compared to the
+original PingPlotter:
+
+* Log-scale plotting
+* Frame-rate de-coupled from ping-rate
+* Statistics integrated into the display
+* Colours :)
+* The interface part of TUI, there's actually a way to interact with it while it's running
+* Fully featured file saving/loading, with an export to CSV for interoperability
+
+And even though I've now moved several times I've never gone back to Virgin Media and my latency has never
+been better, here's a 200,000 sample spanning 6 months showing that my average ping in my current abode is
+10.5ms with a standard deviation of 8.59ms. Pretty sweet.
+
+![A busy graph with many red lines showing dropped packets, but lots of large white blocks near the minimum y-axis](./images/200k-pings.png)
+
+I'm also quite happy to report that unlike PingPlotter this one comes with actual unit tests that give me
+confidence to do refactors in future and add new features without breaking existing behaviour.[^3]
+
+## Conclusion
+
+I didn't build PingPlotter in time to save me from Virgin Media, but several years later I have built AcciPing
+which I'd be happy to use to measure my latency long term and hopefully have better luck escalating my poor
+latency to a friendly rep who might actually be able to do something. This tool for me is a bit of insurance
+that came with some fun code writing along the way. In future blog posts I plan to cover the internals of
+AcciPing, the differences between it and PingPlotter and the fun of *Go*.
+
+Thanks for reading
+
+~ Lexer747
 
 -----
 
@@ -139,5 +168,12 @@ func getBlogs() ([]types.Blog, error) {
 
 -----
 
+#### Footnotes
+
 [^1]: It should go without saying, this paragraph is all speculation on my part I don't have concrete reasons
     for why the performance was so bad and why the engineers couldn't find a solution.
+[^2]: Haskell is an incredible learning tool and a fundamentally powerful and expressive language. But it just
+    doesn't translate super well into procedural mechanisms and concurrency patterns, the brittleness starts
+    to show very quickly. I might write more about this in future ...
+[^3]: Though as you can see there's still a few bugs and growing pains at certain sizes of graphs, a slightly
+    illegible y-axis is on my list to fix.
