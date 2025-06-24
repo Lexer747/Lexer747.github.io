@@ -40,7 +40,10 @@ func CSS(mc MarkdownConfig) types.CSS {
 	if err != nil {
 		panic("should not fail")
 	}
-	return types.CSS{Data: buf.Bytes()}
+	css := buf.String()
+	// For some reason the builtin CSS has these as foreground colours
+	css = strings.Replace(css, "color", "background-color", 2)
+	return types.CSS{Data: []byte(css)}
 }
 
 func (mc MarkdownConfig) formatter() *html.Formatter {
@@ -67,9 +70,6 @@ func renderHook(mc MarkdownConfig) func(w io.Writer, node ast.Node, entering boo
 		case (*ast.CodeBlock):
 			lang := string(typedNode.Info)
 			source := string(typedNode.Literal)
-			if lang == "" {
-				lang = ""
-			}
 			l := lexers.Get(lang)
 			if l == nil {
 				l = lexers.Analyse(source)

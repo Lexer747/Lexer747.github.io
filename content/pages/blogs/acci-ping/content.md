@@ -95,8 +95,42 @@ Thus: [PingPlotter](https://github.com/Lexer747/PingPlotter) was born 🎉
 ## PingPlotter
 
 A slightly flakey, awkward TUI built in *Haskell*:
-
 ![A ping plotter demonstration gif. Showing an ASCII terminal plotting ping over a few seconds.](./images/pingplotter.gif)
+
+```go
+func getBlogs() ([]types.Blog, error) {
+	markdownFiles, err := glob(inputPages, "*.md")
+	if err != nil {
+		return nil, wrapf(err, "failed to read markdown files at dir %q", inputPages)
+	}
+	blogs := make([]types.Blog, len(markdownFiles))
+	var errs []error
+	for i, file := range markdownFiles {
+		bytes, err := os.ReadFile(file)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to read markdown %q", file))
+			continue
+		}
+		url := filepath.Dir(file)
+		metaErrs, metaContent := getMetaContent(url, file)
+		if len(metaErrs) > 0 {
+			errs = append(errs, metaErrs...)
+			continue
+		}
+		// testing
+		blogs[i] = types.Blog{
+			SrcPath: file,
+			BlogURL: url,
+			File:    bytes,
+			Content: metaContent,
+		}
+	}
+	if len(errs) > 0 {
+		return nil, errors.Join(errs...)
+	}
+	return blogs, nil
+}
+```
 
 
 -----
