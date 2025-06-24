@@ -48,6 +48,7 @@ func runMarkdown(blogs []types.Blog) (types.CSS, error) {
 		if err != nil {
 			return css, wrapf(err, "while creating markdown for blog %q", blog.SrcPath)
 		}
+		fsutil.CopyDirRecursively(blog.Images, filepath.Dir(blog.OutputFile)+"/images/")
 	}
 	return css, nil
 }
@@ -67,7 +68,7 @@ func makeOutputFile(blog types.Blog) (string, *os.File, error) {
 }
 
 func getBlogs() ([]types.Blog, error) {
-	markdownFiles, err := glob(inputPages, "*.md")
+	markdownFiles, err := fsutil.Glob(inputPages, "*.md")
 	if err != nil {
 		return nil, wrapf(err, "failed to read markdown files at dir %q", inputPages)
 	}
@@ -123,7 +124,7 @@ func getImages(url string) string {
 
 func getMetaContent(url string, file string) ([]error, []types.MetaContent) {
 	errs := []error{}
-	contents, err := glob(url+"/", "*.content")
+	contents, err := fsutil.Glob(url+"/", "*.content")
 	if err != nil {
 		errs = append(errs, wrapf(err, "failed to read markdown %q", file))
 		return errs, nil

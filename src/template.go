@@ -271,7 +271,7 @@ func getTemplates(templates []string) ([]*Fixture, error) {
 }
 
 func runTemplating(blogs []types.Blog) error {
-	files, err := glob(inputFiles, "*.template")
+	files, err := fsutil.Glob(inputFiles, "*.template")
 	if err != nil {
 		return wrap(err, "failed to get template files")
 	}

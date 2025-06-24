@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/fs"
 	"log/slog"
 	"os"
 	"path/filepath"
@@ -60,29 +59,6 @@ func main() {
 	// TODO delete partial generated files
 }
 
-func glob(root, glob string) ([]string, error) {
-	results := []string{}
-	dir := os.DirFS(root)
-	if dir == nil {
-		return results, fmt.Errorf("bad root %q", root)
-	}
-	fs.WalkDir(dir, ".", func(path string, d fs.DirEntry, err error) error {
-		if d == nil || d.IsDir() {
-			return nil
-		}
-		file := filepath.Base(path)
-		matched, globErr := filepath.Match(glob, file)
-		if globErr != nil {
-			panic(globErr.Error())
-		}
-		if matched {
-			results = append(results, root+path)
-		}
-		return nil
-	})
-	return results, nil
-}
-
 func exit(err error) {
 	fmt.Fprint(os.Stderr, err.Error()+"\n")
 	os.Exit(1)
@@ -103,7 +79,7 @@ func wrapf(err error, msg string, args ...any) error {
 var eval = types.Evaluator{Context: map[types.Contexts]any{}}
 
 func preTemplating() error {
-	contexts, err := glob(inputFiles, "*.context")
+	contexts, err := fsutil.Glob(inputFiles, "*.context")
 	if err != nil {
 		return wrap(err, "failed to get contexts files")
 	}
@@ -122,7 +98,7 @@ func preTemplating() error {
 			eval.Context[types.MarkdownContext] = fixture
 		}
 	}
-	favicons, err := glob(inputFiles, "*.ico")
+	favicons, err := fsutil.Glob(inputFiles, "*.ico")
 	if err != nil {
 		return wrap(err, "failed to get contexts files")
 	}
