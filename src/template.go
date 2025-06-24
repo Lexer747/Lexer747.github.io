@@ -128,13 +128,9 @@ func (f *Fixture) Parse() {
 		case FileEmbed, Fragment:
 			data = strings.Trim(rest, " ")
 		case SummaryEnumerate:
-			parseMore := strings.Split(strings.Trim(rest, " "), " ")
-			data = parseMore[0]
-			if len(parseMore) > 1 {
-				rest := strings.Join(parseMore[1:], " ")
-				if strings.HasPrefix(rest, "class=") {
-					class = strings.Split(rest, "class=")[1]
-				}
+			trimmed := strings.Trim(rest, " ")
+			if strings.HasPrefix(trimmed, "class=") {
+				class = strings.Split(rest, "class=")[1]
 			}
 		}
 		f.Templates[i] = Template{
@@ -149,7 +145,15 @@ func (f *Fixture) Parse() {
 	}
 }
 
-func applyTemplate(template Template, outputFile string, fixture *Fixture, err error, errs []error, i int) []error {
+func applyTemplate(
+	template Template,
+	outputFile string,
+	fixture *Fixture,
+	blogs []types.Blog,
+	err error,
+	errs []error,
+	i int,
+) []error {
 	var output []byte
 	switch template.TemplateType {
 	case None:
@@ -166,14 +170,13 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 		date := strconv.Itoa(time.Now().Year())
 		output = []byte(date)
 	case SummaryEnumerate:
-		folder := template.TemplateData
-		files, err := glob(inputPages+folder, "title.content")
-		if err != nil {
-			errs = append(errs, wrapf(err, "couldn't get %s content", SummaryEnumerate))
-		}
 		b := &strings.Builder{}
-		for _, file := range files {
-			err = writeMarkdownSummary(b, template, file, fixture.SrcPath)
+		for _, blog := range blogs {
+			rel, err := filepath.Rel(filepath.Dir(outputFile), blog.OutputFile)
+			if err != nil {
+				errs = append(errs, err)
+			}
+			err = writeMarkdownSummary(b, template, "./"+rel, blog.Title(), fixture.SrcPath)
 			if err != nil {
 				errs = append(errs, err)
 			}
@@ -189,7 +192,7 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 		parsed := &Fixture{SrcPath: file, File: toParse}
 		parsed.Parse()
 		for i, template := range parsed.Templates {
-			errs = applyTemplate(template, outputFile, parsed, err, errs, i)
+			errs = applyTemplate(template, outputFile, parsed, blogs, err, errs, i)
 		}
 		output = parsed.File
 	case IndexLocation:
@@ -239,18 +242,8 @@ func applyTemplate(template Template, outputFile string, fixture *Fixture, err e
 	return errs
 }
 
-func writeMarkdownSummary(b *strings.Builder, template Template, file string, srcPath string) error {
+func writeMarkdownSummary(b *strings.Builder, template Template, url string, bytes []byte, srcPath string) error {
 	b.WriteString(`<li class=` + template.Class + `>`)
-	bytes, err := os.ReadFile(file)
-	if err != nil {
-		return wrapf(err, "failed to get %q subfile %q", srcPath, file)
-	}
-	// TODO this URL is incorrect, it should be relative to the root of the page
-	rel, err := filepath.Rel(inputPages, filepath.Dir(file))
-	if err != nil {
-		panic(err.Error())
-	}
-	url := rel + ".html"
 	b.WriteString(`<a href="` + url + `">`)
 	b.Write(bytes)
 	b.WriteString(`</a>`)
@@ -277,7 +270,7 @@ func getTemplates(templates []string) ([]*Fixture, error) {
 	return ret, errors.Join(errs...)
 }
 
-func runTemplating() error {
+func runTemplating(blogs []types.Blog) error {
 	files, err := glob(inputFiles, "*.template")
 	if err != nil {
 		return wrap(err, "failed to get template files")
@@ -288,7 +281,7 @@ func runTemplating() error {
 	}
 	errs := make([]error, 0)
 	for _, fixture := range toReplace {
-		fixtureErr := fixture.doTemplating("")
+		fixtureErr := fixture.doTemplating(blogs, "")
 		if fixtureErr != nil {
 			errs = append(errs, fixtureErr)
 			continue
@@ -297,7 +290,7 @@ func runTemplating() error {
 	return errors.Join(errs...)
 }
 
-func (fixture *Fixture) doTemplating(outputFile string) error {
+func (fixture *Fixture) doTemplating(blogs []types.Blog, outputFile string) error {
 	var errs []error
 	var f *os.File
 	var err error
@@ -314,7 +307,7 @@ func (fixture *Fixture) doTemplating(outputFile string) error {
 	}
 
 	for i, template := range fixture.Templates {
-		errs = applyTemplate(template, outputFile, fixture, err, errs, i)
+		errs = applyTemplate(template, outputFile, fixture, blogs, err, errs, i)
 	}
 
 	_, err = f.Write(fixture.File)

@@ -22,10 +22,12 @@ type MetaContent struct {
 }
 
 type Blog struct {
-	SrcPath string
-	BlogURL string
-	File    []byte
-	Content []MetaContent
+	SrcPath       string
+	BlogInputPath string
+	File          []byte
+	Content       []MetaContent
+	Images        string
+	OutputFile    string
 }
 
 type CSS struct {
@@ -35,6 +37,11 @@ type CSS struct {
 func (b Blog) Title() []byte {
 	content := b.getMetaContent("title.content")
 	return content.File
+}
+
+func (b Blog) Published() string {
+	content := b.getMetaContent("published.content")
+	return string(content.File)
 }
 
 func (b Blog) getMetaContent(file string) MetaContent {

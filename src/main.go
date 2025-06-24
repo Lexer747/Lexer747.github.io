@@ -32,17 +32,22 @@ func main() {
 		exit(err)
 	}
 
+	blogs, err := getBlogs()
+	if err != nil {
+		exit(err)
+	}
+
 	err = preTemplating()
 	if err != nil {
 		exit(err)
 	}
 
-	err = runTemplating()
+	err = runTemplating(blogs)
 	if err != nil {
 		exit(err)
 	}
 
-	css, err := runMarkdown()
+	css, err := runMarkdown(blogs)
 	if err != nil {
 		exit(err)
 	}
