@@ -29,6 +29,8 @@ article {
     .chroma {
         margin-left: 0.5em;
         padding: 0.5em;
+        display: block;
+        overflow-x: auto;
     }
 
     .Lexer747-link,
