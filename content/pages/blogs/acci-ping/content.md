@@ -11,17 +11,17 @@ my new flat mates along the lines of:
 > Lexer747:blockquote-blue
 > Hey, which internet provider should we go with for the year?
 
-<br>
+<div></div>
 
 > Lexer747:blockquote-cyan
 > Lets go have a look at some comparison sites
 
-<br>
+<div></div>
 
 > Lexer747:blockquote-blue
 > [...]
 
-<br>
+<div></div>
 
 > Lexer747:blockquote-cyan
 > Wow Virgin sure looks like a great deal, great speeds (~70Mb/s down) and competitively priced.
@@ -90,7 +90,7 @@ especially at a glance. I just taken my network course at University, ping would
 * See how building TUI^(Terminal User Interface)^ applications is done
 * Use lowish level networking APIs
 
-Thus: [PingPlotter](https://github.com/Lexer747/PingPlotter) was born 🎉
+Thus: [PingPlotter] was born 🎉
 
 ## PingPlotter
 
@@ -102,7 +102,7 @@ complexity of the project rose fairly rapidly as I needed to refactor parts of t
 saving/loading, decoupling framerate from ping-rate, and adding a log-scale toggle.
 
 In the end I lost motivation, we switched provider by this time which eliminated my need to endlessly track
-the ping as our new provider ([BT](https://en.wikipedia.org/wiki/BT_Group)) was providing much better latency.
+the ping as our new provider ([BT]) was providing much better latency.
 
 This lead to a rather long hiatus between improving the tool I'd created (7 years in fact ...). Due to the
 nature of Haskell by the time I got back around to having a stab at version 2 of PingPlotter. I'd completely
@@ -126,7 +126,7 @@ version, which is:
 * Minimal dependencies, stick to the standard library (ideally even networking is written against kernel
   level APIs).
 
-But at the end of it all a new tool was built - [AcciPing](https://github.com/Lexer747/acci-ping).
+But at the end of it all a new tool was built - [AcciPing].
 
 ## AcciPing
 ![AcciPing demonstration gif. Showing an ASCII terminal plotting ping over a few seconds. Notably with more statistics and colour](./images/acci-ping.gif)
@@ -137,7 +137,7 @@ original PingPlotter:
 * Log-scale plotting
 * Frame-rate de-coupled from ping-rate
 * Statistics integrated into the display
-* Colours :)
+* Colours :) - Including theming via a basic JSON schema
 * The interface part of TUI, there's actually a way to interact with it while it's running
 * Fully featured file saving/loading, with an export to CSV for interoperability
 
@@ -152,15 +152,33 @@ confidence to do refactors in future and add new features without breaking exist
 
 ## Conclusion
 
-I didn't build PingPlotter in time to save me from Virgin Media, but several years later I have built AcciPing
+I didn't build PingPlotter in time to save me from Virgin Media, but several years later I have built [AcciPing]
 which I'd be happy to use to measure my latency long term and hopefully have better luck escalating my poor
 latency to a friendly rep who might actually be able to do something. This tool for me is a bit of insurance
 that came with some fun code writing along the way. In future blog posts I plan to cover the internals of
-AcciPing, the differences between it and PingPlotter and the fun of *Go*.
+[AcciPing], the differences between it and PingPlotter and the fun of *Go*.
 
 Thanks for reading
 
 ~ Lexer747
+
+<br>
+<br>
+<br>
+
+### More Example Pictures
+
+![Light Mode version of AcciPing running on windows 11.](./images/WindowsTerminal_vaip1qU25v.png)
+
+> Lexer747:blockquote-caption
+> Light Mode version of [AcciPing] running on Windows 11.
+
+<br>
+
+![Larger window size gif of AcciPing](./images/larger-window.gif)
+
+> Lexer747:blockquote-caption
+> Larger window size gif of AcciPing, also shows statistics at end (after pressing control-c).
 
 -----
 
@@ -177,3 +195,9 @@ Thanks for reading
     to show very quickly. I might write more about this in future ...
 [^3]: Though as you can see there's still a few bugs and growing pains at certain sizes of graphs, a slightly
     illegible y-axis is on my list to fix.
+
+
+[AcciPing]: https://github.com/Lexer747/acci-ping
+[BT]: https://en.wikipedia.org/wiki/BT_Group
+[Dota 2]: https://www.dota2.com/home
+[PingPlotter]: https://github.com/Lexer747/PingPlotter
