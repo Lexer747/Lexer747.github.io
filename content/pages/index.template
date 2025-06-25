@@ -2,10 +2,10 @@
 
 {{t: sidebar.fragment}}
 
-<div aria-label="Article" class="text-white ml-64 mt-4">
+<div aria-label="Article" class="text-white min-md:ml-64 mt-4">
     <ul class="space-y-2 font-medium justify-center text-center">
         {{summary-enumerate: class="text-3xl hover:text-cyan-400"}}
     </ul>
 </div>
 
-{{f: footer.inline}}
+{{t: footer.fragment}}

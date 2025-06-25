@@ -1,4 +1,4 @@
-<div class="fixed top-0 left-0 h-screen w-64 bg-cyan-950 text-white" aria-label="Sidebar">
+<div class="max-md:hidden fixed top-0 left-0 h-screen max-w-64 md:w-64 bg-cyan-950 text-white" aria-label="Sidebar">
     <div class="h-full overflow-y-auto">
         <a class="flex flex-row items-center ps-2.5 m-5 group" href="https://lexer747.github.io/">
             <svg viewBox="0 0 600 600" width="80" height="80">
@@ -55,4 +55,39 @@
             </ul>
         </div>
     </div>
+</div>
+
+<div class="min-md:hidden bg-cyan-950 text-white" aria-label="Topbar">
+    <a class="flex flex-row justify-center pt-2 pl-2 pr-2" href="https://lexer747.github.io/">
+        <svg viewBox="0 0 600 600" width="40" height="40">
+            {{f: ../images/flower.svg}}
+        </svg>
+        <span class="ps-4 self-center whitespace-nowrap text-cyan-400 font-semibold text-lg group-hover:text-white">Lexer747</span>
+    </a>
+    <div class="flex flex-row justify-center mt-1 pt-1">
+        <hr class="ml-1/6 w-5/6 rounded-sm h-px text-gray-400">
+    </div>
+    <ul class="flex flex-wrap items-center justify-center text-gray-900">
+        <a href="{{index-location:}}" class="mx-2 flex items-center text-center p-2 rounded-lg hover:bg-cyan-900 group">
+            <svg class="w-5 h-5 transition duration-75 text-gray-600 group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="23" height="22" fill="currentColor" viewBox="0 0 245 295">
+            {{f: ../images/pages.svg}}
+            </svg>
+            <span class="ms-3 text-gray-400 group-hover:text-white">All Posts</span>
+        </a>
+        <li class="flex flex-row flex-nowrap items-center ml-2 group">
+            <a class="flex text-cyan-400 group-hover:text-white" href="https://github.com/Lexer747">
+                <svg viewBox="0 0 100 100" width="20" height="20" fill="currentColor">{{f: ../images/thirdparty/github.svg}}</svg>
+            </a>
+        </li>
+        <li class="flex flex-row flex-nowrap items-center ml-2 group">
+            <a class="flex text-cyan-400 group-hover:text-white" href="https://www.linkedin.com/in/alex-lewis-718332137/">
+                <svg viewBox="0 0 100 100" width="20" height="20" fill="currentColor">{{f: ../images/thirdparty/linkedin.svg}}</svg>
+            </a>
+        </li>
+        <li class="flex flex-row flex-nowrap items-center ml-2 group">
+            <a class="flex text-cyan-400 group-hover:text-white" href="https://steamcommunity.com/id/Lexer747/">
+                <svg viewBox="0 0 100 100" width="20" height="20" fill="currentColor">{{f: ../images/thirdparty/steam2.svg}}</svg>
+            </a>
+        </li>
+    </ul>
 </div>
