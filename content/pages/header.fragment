@@ -9,4 +9,6 @@
     <link href="{{css-location:}}" rel="stylesheet">
 </head>
 
+<!-- footer --!>
+<div class="flex flex-col justify-between min-h-screen">
 <body class="bg-gray-950 text-lg">

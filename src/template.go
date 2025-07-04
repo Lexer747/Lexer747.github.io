@@ -130,7 +130,7 @@ func (f *Fixture) Parse() {
 		case SummaryEnumerate:
 			trimmed := strings.Trim(rest, " ")
 			if strings.HasPrefix(trimmed, "class=") {
-				class = strings.Split(rest, "class=")[1]
+				class = strings.Trim(strings.Split(rest, "class=")[1], `"`)
 			}
 		}
 		f.Templates[i] = Template{
@@ -176,7 +176,7 @@ func applyTemplate(
 			if err != nil {
 				errs = append(errs, err)
 			}
-			err = writeMarkdownSummary(b, template, "./"+rel, blog.Title(), fixture.SrcPath)
+			err = writeMarkdownSummary(b, template, "./"+rel, blog)
 			if err != nil {
 				errs = append(errs, err)
 			}
@@ -242,11 +242,12 @@ func applyTemplate(
 	return errs
 }
 
-func writeMarkdownSummary(b *strings.Builder, template Template, url string, bytes []byte, srcPath string) error {
-	b.WriteString(`<li class=` + template.Class + `>`)
+func writeMarkdownSummary(b *strings.Builder, template Template, url string, blog types.Blog) error {
+	b.WriteString(`<li class="` + template.Class + ` group">`)
 	b.WriteString(`<a href="` + url + `">`)
-	b.Write(bytes)
+	b.Write(blog.Title())
 	b.WriteString(`</a>`)
+	b.WriteString(`<div class="text-gray-500 text-base group-hover:text-cyan-500">Published: ` + blog.Published() + `</div>`)
 	b.WriteString(`</li>`)
 	return nil
 }

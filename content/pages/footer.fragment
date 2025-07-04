@@ -1,13 +1,15 @@
-<div class="min-xl:hidden bg-cyan-950 text-white" aria-label="Footer">
-    <div class="p-4 flex justify-center text-center">
-        <p>Copyright © {{current-year:}}
-            <span class="text-cyan-400 font-semibold">{{me:}}</span>
-            <br>
-            <span class="text-gray-500">
-                Licensed under
-                <a class="font-semibold hover:text-white" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
-            </span>
-        </p>
+
+    <div class="min-xl:hidden bg-cyan-950 text-white" aria-label="Footer">
+        <div class="p-4 flex justify-center text-center">
+            <p>Copyright © {{current-year:}}
+                <span class="text-cyan-400 font-semibold">{{me:}}</span>
+                <br>
+                <span class="text-gray-500">
+                    Licensed under
+                    <a class="font-semibold hover:text-white" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
+                </span>
+            </p>
+        </div>
     </div>
 </div>
 
