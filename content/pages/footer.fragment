@@ -1,4 +1,4 @@
-<div class="min-md:hidden bg-cyan-950 text-white" aria-label="Footer">
+<div class="min-xl:hidden bg-cyan-950 text-white" aria-label="Footer">
     <div class="p-4 flex justify-center text-center">
         <p>Copyright © {{current-year:}}
             <span class="text-cyan-400 font-semibold">{{me:}}</span>

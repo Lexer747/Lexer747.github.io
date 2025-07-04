@@ -1,4 +1,4 @@
-<div class="max-md:hidden fixed top-0 left-0 h-screen max-w-64 md:w-64 bg-cyan-950 text-white" aria-label="Sidebar">
+<div class="max-xl:hidden fixed top-0 left-0 h-screen max-w-64 xl:w-64 bg-cyan-950 text-white" aria-label="Sidebar">
     <div class="h-full overflow-y-auto">
         <a class="flex flex-row items-center ps-2.5 m-5 group" href="https://lexer747.github.io/">
             <svg viewBox="0 0 600 600" width="80" height="80">
@@ -57,7 +57,7 @@
     </div>
 </div>
 
-<div class="min-md:hidden bg-cyan-950 text-white" aria-label="Topbar">
+<div class="min-xl:hidden bg-cyan-950 text-white" aria-label="Topbar">
     <a class="flex flex-row justify-center pt-2 pl-2 pr-2" href="https://lexer747.github.io/">
         <svg viewBox="0 0 600 600" width="40" height="40">
             {{f: ../images/flower.svg}}
