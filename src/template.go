@@ -159,7 +159,7 @@ func applyTemplate(
 	case None:
 		slog.Warn("None Template Type", "fixture", fixture)
 	case Me:
-		output = []byte(`<a href="https://lexer747.github.io/" class="hover:text-white">Lexer747</a>`)
+		output = []byte(`<a href="https://lexer747.github.io/index.html" class="hover:text-white">Lexer747</a>`)
 	case FileEmbed:
 		file := getFile(template, fixture.SrcPath)
 		output, err = os.ReadFile(file)
@@ -205,12 +205,14 @@ func applyTemplate(
 			indexLocation = "#"
 		}
 		output = []byte(indexLocation)
+		// FIXME doesn't work in prod
 	case CSSLocation:
 		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
 		if err != nil {
 			errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
 		}
 		output = []byte(location + "/output.css")
+		// FIXME doesn't work in prod
 	case FaviconLocation:
 		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
 		if err != nil {
