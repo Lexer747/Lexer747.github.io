@@ -11,5 +11,6 @@ function build() {
     popd &> /dev/null
 }
 
+rm -r ./build
 export TIMEFORMAT="%3lR"
 time build

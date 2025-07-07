@@ -51,6 +51,7 @@ const (
 	Fragment         TemplateType = "t"
 	Me               TemplateType = "me"
 	SummaryEnumerate TemplateType = "summary-enumerate"
+	BlogRedirect     TemplateType = "blog-redirect"
 
 	MarkdownTitle_TT   TemplateType = "markdown-title"
 	MarkdownContent_TT TemplateType = "markdown-content"
@@ -125,7 +126,7 @@ func (f *Fixture) Parse() {
 		var data string
 		var class string
 		switch tt {
-		case FileEmbed, Fragment:
+		case FileEmbed, Fragment, BlogRedirect:
 			data = strings.Trim(rest, " ")
 		case SummaryEnumerate:
 			trimmed := strings.Trim(rest, " ")
@@ -233,6 +234,27 @@ func applyTemplate(
 			output = []byte(location + "/" + filepath.Base(faviconPath.(string)))
 		} else {
 			output = []byte(siteUrl + "/" + filepath.Base(faviconPath.(string)))
+		}
+	case BlogRedirect:
+		expectedBlog := template.TemplateData
+		success := false
+		for _, blog := range blogs {
+			if filepath.Base(blog.OutputFile) == expectedBlog {
+				rel, err := filepath.Rel(outputFiles, blog.OutputFile)
+				if err != nil {
+					errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
+				}
+				if os.Getenv("LEXER747_DEV") != "" {
+					output = []byte("file://///wsl.localhost/Ubuntu" + outputFiles + rel)
+				} else {
+					output = []byte(siteUrl + rel)
+				}
+				success = true
+				break
+			}
+		}
+		if !success {
+			slog.Warn(fmt.Sprintf("Failed to get BlogRedirect resolution, no matching output file %q", expectedBlog), "blogs", blogs)
 		}
 	case MarkdownContent_TT, MarkdownTitle_TT:
 		output = []byte(template.TemplateData)
