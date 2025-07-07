@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export LEXER747_DEV="1"
-
 function build() {
     pushd src &> /dev/null
     go mod tidy

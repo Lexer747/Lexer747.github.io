@@ -1,6 +1,5 @@
 #!/bin/bash
 
-export LEXER747_DEV="1"
 
 pushd src &> /dev/null
 

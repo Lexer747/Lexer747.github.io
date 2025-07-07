@@ -22,11 +22,6 @@ var (
 	tailwindOutput string
 )
 
-const (
-	siteUrl = "https://lexer747.github.io/"
-	homeUrl = siteUrl + "index.html"
-)
-
 func setup(newRoot string) {
 	root = newRoot
 

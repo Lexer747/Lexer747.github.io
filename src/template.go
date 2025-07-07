@@ -57,7 +57,7 @@ const (
 
 	CSSLocation     TemplateType = "css-location"
 	FaviconLocation TemplateType = "favicon-location"
-	HomeURL         TemplateType = "home-url"
+	IndexLocation   TemplateType = "index-location"
 )
 
 const (
@@ -159,7 +159,7 @@ func applyTemplate(
 	case None:
 		slog.Warn("None Template Type", "fixture", fixture)
 	case Me:
-		output = []byte(`<a href="` + homeUrl + `" class="hover:text-white">Lexer747</a>`)
+		output = []byte(`<a href="https://lexer747.github.io/index.html" class="hover:text-white">Lexer747</a>`)
 	case FileEmbed:
 		file := getFile(template, fixture.SrcPath)
 		output, err = os.ReadFile(file)
@@ -195,45 +195,34 @@ func applyTemplate(
 			errs = applyTemplate(template, outputFile, parsed, blogs, err, errs, i)
 		}
 		output = parsed.File
-	case HomeURL:
-		if os.Getenv("LEXER747_DEV") != "" {
-			location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
-			if err != nil {
-				errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
-			}
-			indexLocation := location + "/index.html"
-			if indexLocation == outputFile {
-				indexLocation = "#"
-			}
-			output = []byte(indexLocation)
-		} else {
-			output = []byte(homeUrl)
+	case IndexLocation:
+		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
 		}
+		indexLocation := location + "/index.html"
+		if indexLocation == outputFile {
+			indexLocation = "#"
+		}
+		output = []byte(indexLocation)
+		// FIXME doesn't work in prod
 	case CSSLocation:
-		if os.Getenv("LEXER747_DEV") != "" {
-			location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
-			if err != nil {
-				errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
-			}
-			output = []byte(location + "/output.css")
-		} else {
-			output = []byte(siteUrl + "/output.css")
+		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
 		}
+		output = []byte(location + "/output.css")
+		// FIXME doesn't work in prod
 	case FaviconLocation:
+		location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
+		if err != nil {
+			errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
+		}
 		faviconPath, ok := eval.Context[types.FaviconContext]
 		if !ok {
 			errs = append(errs, errors.New("No Favicon content"))
 		}
-
-		if os.Getenv("LEXER747_DEV") != "" {
-			location, err := filepath.Rel(filepath.Dir(outputFile), outputPages)
-			if err != nil {
-				errs = append(errs, wrapf(err, "failed to get relative location %q", fixture.SrcPath))
-			}
-			output = []byte(location + "/" + filepath.Base(faviconPath.(string)))
-		} else {
-			output = []byte(siteUrl + "/" + filepath.Base(faviconPath.(string)))
-		}
+		output = []byte(location + "/" + filepath.Base(faviconPath.(string)))
 	case MarkdownContent_TT, MarkdownTitle_TT:
 		output = []byte(template.TemplateData)
 	default:
