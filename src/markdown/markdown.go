@@ -70,6 +70,7 @@ func renderHook(mc MarkdownConfig) func(w io.Writer, node ast.Node, entering boo
 		case (*ast.CodeBlock):
 			lang := string(typedNode.Info)
 			source := string(typedNode.Literal)
+			source = strings.TrimPrefix(source, "\n")
 			l := lexers.Get(lang)
 			if l == nil {
 				l = lexers.Analyse(source)
@@ -145,15 +146,16 @@ func addAnchorLink(heading *ast.Heading, headerId int) int {
 		Leaf: ast.Leaf{Literal: []byte(anchor)},
 	}}, heading.Children...)
 	heading.Attribute = &ast.Attribute{}
-	heading.Classes = [][]byte{[]byte(`flex flex-row items-center group`)}
 	return headerId
 }
+
+// TODO this should probably be a url instead to stop duplicating it
 
 //go:embed anchor.svg
 var anchorSVG string
 
 func makeAnchor(headingID, title string) string {
-	const template = `<a id="%s" class="anchor" style="margin: 0 0.7em 0 0" aria-label="Permalink: %s" href="#%s">%s</a>`
+	const template = `<a id="%s" class="anchor" aria-label="Permalink: %s" href="#%s">%s</a>`
 	result := fmt.Sprintf(template, headingID, title, headingID, anchorSVG)
 	return result
 }

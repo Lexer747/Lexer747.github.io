@@ -16,6 +16,7 @@ function cleanup() {
 trap cleanup EXIT
 
 init
+./Lexer747.github.io
 
 while inotifywait -e modify,move,create,delete -r ./../content/; do
     ./Lexer747.github.io

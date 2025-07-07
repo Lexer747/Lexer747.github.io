@@ -128,10 +128,10 @@ version, which is:
 * Minimal dependencies, stick to the standard library (ideally even networking is written against kernel
   level APIs).
 
-But, at the end of it all a new tool was built - [AcciPing].
+But, at the end of it all a new tool was built - [acci-ping].
 
-## AcciPing
-![AcciPing demonstration gif. Showing an ASCII terminal plotting ping over a few seconds. Notably with more statistics and colour](./images/acci-ping.gif)
+## acci-ping
+![acci-ping demonstration gif. Showing an ASCII terminal plotting ping over a few seconds. Notably with more statistics and colour](./images/acci-ping.gif)
 
 A more robust, performant and shinier TUI built in *Go*. It supports many new features compared to the
 original PingPlotter:
@@ -154,11 +154,11 @@ confidence to do refactors in future and add new features without breaking exist
 
 ## Conclusion
 
-I didn't build PingPlotter in time to save me from Virgin Media, but several years later I have built [AcciPing]
+I didn't build PingPlotter in time to save me from Virgin Media, but several years later I have built [acci-ping]
 which I'd be happy to use to measure my latency long term, and hopefully have better luck escalating my poor
 latency to a friendly rep who might actually be able to do something. This tool for me is a bit of insurance
 that came with some fun code writing along the way. In future blog posts I plan to cover the internals of
-[AcciPing], the differences between it and PingPlotter and the fun of *Go*.
+[acci-ping], the differences between it and PingPlotter and the fun of *Go*.
 
 Thanks for reading
 
@@ -170,17 +170,17 @@ Thanks for reading
 
 ### More Example Pictures
 
-![Light Mode version of AcciPing running on windows 11.](./images/WindowsTerminal_vaip1qU25v.png)
+![Light Mode version of acci-ping running on windows 11.](./images/WindowsTerminal_vaip1qU25v.png)
 
 > Lexer747:blockquote-caption
-> Light Mode version of [AcciPing] running on Windows 11.
+> Light Mode version of [acci-ping] running on Windows 11.
 
 <br>
 
-![Larger window size gif of AcciPing](./images/larger-window.gif)
+![Larger window size gif of acci-ping](./images/larger-window.gif)
 
 > Lexer747:blockquote-caption
-> Larger window size gif of AcciPing, also shows statistics at end (after pressing control-c).
+> Larger window size gif of acci-ping, also shows statistics at end (after pressing control-c).
 
 -----
 
@@ -199,7 +199,7 @@ Thanks for reading
     illegible y-axis is on my list to fix.
 
 
-[AcciPing]: https://github.com/Lexer747/acci-ping
+[acci-ping]: https://github.com/Lexer747/acci-ping
 [BT]: https://en.wikipedia.org/wiki/BT_Group
 [Dota 2]: https://www.dota2.com/home
 [PingPlotter]: https://github.com/Lexer747/PingPlotter

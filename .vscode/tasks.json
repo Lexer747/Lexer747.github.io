@@ -1,0 +1,23 @@
+{
+    "tasks": [
+        {
+            "label": "build",
+            "command": "go",
+            "args": [
+                "build",
+                "-mod",
+                "vendor",
+                "-o",
+                "Lexer747.github.io",
+                "github.com/Lexer747/Lexer747.github.io"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/src/"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+    ]
+}

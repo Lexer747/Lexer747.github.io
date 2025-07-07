@@ -1,10 +1,12 @@
 package main
 
 import (
+	"cmp"
 	"errors"
 	"log/slog"
 	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/Lexer747/Lexer747.github.io/fsutil"
 	"github.com/Lexer747/Lexer747.github.io/markdown"
@@ -103,6 +105,11 @@ func getBlogs() ([]types.Blog, error) {
 	if len(errs) > 0 {
 		return nil, errors.Join(errs...)
 	}
+	// Sort by the most recently published blogs, this affects the ordering in the index as well as the order
+	// in which they're generated.
+	slices.SortFunc(blogs, func(a, b types.Blog) int {
+		return cmp.Compare(b.Published(), a.Published())
+	})
 	return blogs, nil
 }
 

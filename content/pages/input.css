@@ -22,6 +22,23 @@ article {
 
         li {
             padding: 0.1em;
+
+            ul {
+                margin-left: 1em;
+
+                li {
+                    ul {
+                        margin-left: 1em;
+
+                        li {
+                            @apply list-['‒_'] list-inside marker:text-cyan-100
+                        }
+                    }
+
+                    @apply list-[square] list-inside marker:text-cyan-200
+                }
+            }
+
             @apply list-disc list-inside marker:text-cyan-400
         }
     }
@@ -30,6 +47,27 @@ article {
         margin: 0.5em;
 
         li {
+            ol {
+                margin-left: 1em;
+
+                li {
+                    ol {
+                        margin-left: 1em;
+
+                        li {
+                            margin-left: 1em;
+                            padding: 0.1em;
+                            @apply list-decimal marker:text-cyan-100
+                        }
+                    }
+
+                    margin-left: 1em;
+                    padding: 0.1em;
+                    @apply list-decimal marker:text-cyan-200
+                }
+            }
+
+            margin-left: 1em;
             padding: 0.1em;
             @apply list-decimal marker:text-cyan-400
         }
@@ -54,20 +92,38 @@ article {
     }
 
     h1 {
+        display: inline-block;
         @apply text-5xl my-8 mr-8 ml-1
     }
 
     h2 {
+        display: inline-block;
         @apply text-3xl my-8 mr-8 ml-1
     }
 
     h3, h4, h5, h6 {
+        display: inline-block;
         @apply text-xl my-2 mr-2 ml-1
     }
 
+    h1>*,
+    h2>*,
+    h3>*,
+    h4>*,
+    h5>* {
+        white-space: nowrap;
+        display: inline-block;
+    }
 
-    h2>* {
-        margin: 0 0.25em 0 0;
+    p>code,
+    h3>code,
+    li>code {
+        color: rgb(255, 123, 114);
+    }
+
+    .anchor {
+        margin-right: 0.5em;
+        margin-bottom: 2px;
     }
 
     --blockquote-size: 0.2em;
