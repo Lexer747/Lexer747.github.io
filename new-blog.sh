@@ -29,9 +29,21 @@ fi
 mkdir "$dir"
 mkdir "$dir"/images
 
-echo "" > "$dir"/images/.gitkeep
-echo "TODO :)" > "$dir"/content.md
-echo "" > "$dir"/notes.txt
-echo "UNKNOWN" > "$dir"/published.content
-echo "" > "$dir"/revisions.content
-echo "UNKNOWN Title" > "$dir"/title.content
+echo -n "" > "$dir"/images/.gitkeep
+echo -n "" > "$dir"/notes.txt
+echo -n "UNKNOWN" > "$dir"/published.content
+echo -n "" > "$dir"/revisions.content
+echo -n "UNKNOWN Title" > "$dir"/title.content
+
+
+echo "TODO :)
+
+-----
+
+<br>
+
+-----
+
+#### Footnotes
+
+[acci-ping]: https://github.com/Lexer747/acci-ping" > "$dir"/content.md
