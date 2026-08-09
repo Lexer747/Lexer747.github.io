@@ -1,0 +1,40 @@
+{{t: ../header.fragment}}
+
+{{t: ../sidebar.fragment}}
+
+<div class="min-xl:ml-74 mt-4 mx-4">
+    <div class="xl:flex xl:justify-center flex-wrap break-after-auto">
+        <div class="left"></div>
+            <div class="text-white xl:max-w-240">
+                <br>
+                <h1 class="text-5xl"> My OSRS Journey </h1>
+                <br>
+
+                <h2 class="text-3xl"> Pets </h2>
+                <div class="w-full overflow-hidden py-4">
+                    <ul class="flex overflow-x-auto max-w-full gap-4 px-4 no-scrollbar image-carousel" style="scrollbar-width: none; -ms-overflow-style: none;">
+                        {{image-carousel: ./images/Lexer/Pets/}}
+                    </ul>
+                </div>
+                <h2 class="text-3xl"> Sailing </h2>
+                <div class="w-full overflow-hidden py-4">
+                    <ul class="flex overflow-x-auto max-w-full gap-4 px-4 no-scrollbar image-carousel" style="scrollbar-width: none; -ms-overflow-style: none;">
+                        {{image-carousel: ./images/Lexer/Levels/}}
+                    </ul>
+                </div>
+                <h2 class="text-3xl"> Combat Achievements </h2>
+                <div class="w-full overflow-hidden py-4">
+                    <ul class="flex overflow-x-auto max-w-full gap-4 px-4 no-scrollbar image-carousel" style="scrollbar-width: none; -ms-overflow-style: none;">
+                        {{image-carousel: ./images/Lexer/Combat Achievements/}}
+                    </ul>
+                </div>
+            </div>
+        <div class="right"></div>
+    </div>
+</div>
+
+<script>
+    {{f: ../../js/carousel-script.js}}
+</script>
+
+{{t: ../footer.fragment}}

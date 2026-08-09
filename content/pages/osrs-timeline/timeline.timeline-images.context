@@ -1,0 +1,13 @@
+<div class="absolute group z-10" style="left: calc(({{timeline-images-x:}} / {{timeline-width-date: ./data/Lexer}}) * 100%); bottom: calc(({{timeline-max-xp: ./data/Lexer}} / {{timeline-height-xp: ./data/Lexer}}) * 100%);">
+    <div class="absolute -translate-x-1/2 z-300
+                px-1 py-0.5 bg-cyan-400 text-white text-[4px] rounded-full
+                cursor-pointer whitespace-nowrap shadow-md transition-all duration-200
+                border-1
+                group-hover:bg-cyan-600 group-hover:scale-110 group-hover:z-55">
+        <span>▼</span>
+    </div>
+    <img src="{{timeline-fill:}}"
+        class="w-24 h-24 object-contain -translate-x-1/2 translate-y-25/144 block transition-transform duration-250 transform origin-center
+           cursor-pointer group-hover:scale-800 group-hover:z-50 rounded z-5"
+    />
+</div>

@@ -20,6 +20,7 @@ init
 
 ./Lexer747.github.io
 
-while inotifywait -e modify,move,create,delete -r ./content/; do
+while inotifywait -e modify,move,create,delete -r ./content/ &> /dev/null; do
+    echo "=================================="
     ./Lexer747.github.io
 done

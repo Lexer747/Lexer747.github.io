@@ -1,0 +1,5 @@
+<path stroke-width="3"
+    vector-effect="non-scaling-stroke"
+    stroke="{{timeline-points-colour:}}"
+    fill="none"
+    d="{{timeline-fill:}}" />

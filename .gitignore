@@ -2,3 +2,19 @@ build/
 # Dev Binary files
 Lexer747.github.io
 __debug_bin**
+
+# too many images for now
+content/pages/osrs-timeline/images/Also Lexer/*
+content/pages/osrs-timeline/images/Lexer747/*
+content/pages/osrs-timeline/images/Lexer/Boss Kills/*
+content/pages/osrs-timeline/images/Lexer/Clue Scroll Rewards/*
+content/pages/osrs-timeline/images/Lexer/Collection Log/*
+# content/pages/osrs-timeline/images/Lexer/Combat Achievements/*
+content/pages/osrs-timeline/images/Lexer/Deaths/*
+content/pages/osrs-timeline/images/Lexer/Kingdom Rewards/*
+# content/pages/osrs-timeline/images/Lexer/Levels/*
+content/pages/osrs-timeline/images/Lexer/BA High Gambles/*
+# content/pages/osrs-timeline/images/Lexer/Pets/*
+content/pages/osrs-timeline/images/Lexer/Quests/*
+content/pages/osrs-timeline/images/Lexer/Untradeable Drops/*
+content/pages/osrs-timeline/images/Lexer/Wilderness Loot Chest/*

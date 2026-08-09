@@ -1,0 +1,1 @@
+<li class="w-128 shrink-0" {{image-carousel-aria:}}><img src="{{image-carousel-fill:}}" class="object-contain w-full h-100" loading="lazy" decoding="async"/><p class="text-white">{{image-carousel-date:}}</p></li>

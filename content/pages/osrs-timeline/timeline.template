@@ -1,0 +1,55 @@
+{{t: ../header.fragment}}
+
+{{t: ../sidebar.fragment}}
+
+{{timeline-init: ./data/Lexer ./images/Lexer/Pets}}
+
+<div class="xl:flex xl:justify-center flex-wrap break-after-auto text-white">
+    <div class="left flex-3"></div>
+    <div class="content flex-9">
+        <br>
+        <h1 class="text-5xl"> My OSRS Journey </h1>
+        <br>
+        <br><br><br><br><br><br><br><br><br>
+
+        <!-- Timeline -->
+        <div class="w-full bg-[#111827] border border-gray-800 rounded-lg p-6 text-xs text-gray-400 select-none">
+            <!-- Top Section -->
+            <div class="flex h-[800px] w-full gap-x-4">
+                <!-- Y Axis -->
+                <div class="flex flex-col justify-between shrink-0 text-right pr-2">
+                    {{timeline-y-axis: ./data/Lexer}}
+                </div>
+
+                <!-- Graph -->
+                <div class="relative h-[800px] w-full bg-slate-900 z-0" >
+                    <!-- Graph Data -->
+                    <svg viewBox="0 0 {{timeline-width-date: ./data/Lexer}} {{timeline-height-xp: ./data/Lexer}}"
+                        preserveAspectRatio="none"
+                        class="absolute inset-0 w-full h-full overflow-visible -scale-y-100">
+                            {{timeline-points: ./data/Lexer}}
+                            {{timeline-images-lines: ./data/Lexer}}
+                    </svg>
+                    <!-- Graph Highlights -->
+                    {{timeline-images: ./data/Lexer}}
+                </div>
+            </div>
+            <!-- X Axis -->
+            <div class="flex justify-between w-full pt-3 pl-[80px]">
+                {{timeline-x-axis: ./data/Lexer}}
+            </div>
+            <!-- Key -->
+            <div class="flex justify-between w-full pt-3 pl-[80px]">
+                {{timeline-key: ./data/Lexer}}
+            </div>
+        </div>
+        <br>
+    </div>
+    <div class="right flex-1"></div>
+</div>
+
+<script>
+    {{f: ../../js/carousel-script.js}}
+</script>
+
+{{t: ../footer.fragment}}

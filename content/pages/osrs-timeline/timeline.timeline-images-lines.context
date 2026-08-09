@@ -1,0 +1,5 @@
+<path stroke-width="1"
+    vector-effect="non-scaling-stroke"
+    stroke="#ffffff"
+    fill="none"
+    d="M {{timeline-images-x:}} 0 L {{timeline-images-x:}} {{timeline-max-xp: ./data/Lexer}}" />
