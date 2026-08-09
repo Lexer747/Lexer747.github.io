@@ -130,7 +130,36 @@ complex dark light no-theme <any.json files>
 ```
 
 Furthermore to keep inline with idiomatic usage of [FlagSet] as well as keeping the sources of truth in the
-same place the autocomplete suggestions should ideally be where the flag is defined. There are many ways
+same place the autocomplete suggestions should ideally be where the flag is defined. There are many ways this
+could be achieved the way I ended up going was an [embedded](https://go.dev/doc/effective_go#embedding) struct
+route, in which I create a wrapper type around a [FlagSet] pointer:
+
+```go
+// FlagSet is an extension of [flag.FlagSet] that enables auto completion providers for a command.
+type FlagSet struct {
+	*flag.FlagSet
+
+	nameToAc  map[string]*AutoComplete
+	fileExt   string
+	flags     []Flag
+	wantsFile bool
+}
+
+type AutoComplete struct {
+	FileExt   string
+	Choices   []string
+	WantsFile bool
+}
+
+type Flag struct {
+	// AutoComplete specifies if the flag has any auto complete options.
+	AutoComplete *AutoComplete
+	// Name is the actual name as it appears on the CLI without the dash.
+	Name string
+}
+```
+
+
 
 -----
 
