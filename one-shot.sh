@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export LEXER747_DEV="1"
+export SSG_SKIP_COMPRESSION=1
 
 function build() {
     pushd ../SSG &> /dev/null
