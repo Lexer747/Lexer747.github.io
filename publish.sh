@@ -5,10 +5,11 @@
 mkdir -p ./bin
 cp ./Lexer747.github.io ./bin/Lexer747.github.io
 pushd ../SSG || exit
-git rev-parse HEAD &> ../Lexer747.github.io/sha.txt
+git rev-parse HEAD &> ../Lexer747.github.io/bin/sha.txt
 popd || exit
 
 git add ./bin/Lexer747.github.io
+git add ./bin/sha.txt
 git commit -m "Publishing $(date)"
 date +"%Y-%m-%d" &> ./published.content
 
