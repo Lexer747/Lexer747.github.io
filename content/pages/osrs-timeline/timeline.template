@@ -6,7 +6,7 @@
 
 <div class="xl:flex xl:justify-center flex-wrap break-after-auto text-white">
     <div class="left flex-3"></div>
-    <div class="content flex-9">
+    <div class="content flex-13">
         <br>
         <h1 class="text-5xl"> My OSRS Journey </h1>
         <br>
@@ -39,7 +39,7 @@
                 {{timeline-x-axis: ./data/Lexer}}
             </div>
             <!-- Key -->
-            <div class="flex justify-between w-full pt-3 pl-[80px]">
+            <div class="flex-wrap flex w-full pt-3 pl-[80px]">
                 {{timeline-key: ./data/Lexer}}
             </div>
         </div>
